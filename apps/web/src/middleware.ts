@@ -43,7 +43,12 @@ export async function middleware(request: NextRequest) {
       if (!meRes.ok) {
         // API error → clear cookie and send to login
         const loginUrl = new URL('/login', request.url);
-        loginUrl.searchParams.set('reason', 'session_error');
+        if (meRes.status === 401) {
+          loginUrl.searchParams.set('redirect', pathname);
+          loginUrl.searchParams.set('reason', 'session_expired');
+        } else {
+          loginUrl.searchParams.set('reason', 'session_error');
+        }
         const res = NextResponse.redirect(loginUrl);
         res.cookies.delete('session_token');
         return res;

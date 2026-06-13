@@ -87,11 +87,12 @@ function LoginContent() {
       );
       const finalPassword = password || (
         role === 'candidate' 
-          ? 'candidate_password_hash' 
+          ? 'Test@1234' 
           : role === 'employer' 
-            ? 'employer_password_hash' 
-            : 'admin_password_hash'
+            ? 'Employer@123' 
+            : 'Admin@123'
       );
+
 
       const res = await fetch('/api/auth/login', {
         method: 'POST',
