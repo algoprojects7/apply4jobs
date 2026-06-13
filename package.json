@@ -1,0 +1,26 @@
+{
+  "name": "leadhire-ai-monorepo",
+  "version": "1.0.0",
+  "description": "LeadHire AI Multi-Tenant SaaS Job Marketplace",
+  "private": true,
+  "scripts": {
+    "dev:api": "pnpm --filter @leadhire/api dev",
+    "dev:web": "pnpm --filter @leadhire/web dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "db:generate": "pnpm --filter @leadhire/database db:generate",
+    "db:migrate": "pnpm --filter @leadhire/database db:migrate"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma",
+      "sharp"
+    ]
+  }
+}

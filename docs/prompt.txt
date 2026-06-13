@@ -1,0 +1,752 @@
+# PROJECT TITLE
+
+LeadHire AI – Intelligent AI-Powered Job Marketplace Platform
+
+---
+
+# PROJECT OVERVIEW
+
+Design and develop a highly scalable, enterprise-grade, AI-powered Job Marketplace Platform where:
+
+1. Employers can create company profiles and post jobs.
+2. Job seekers can create profiles, upload resumes, search jobs, and apply instantly.
+3. AI continuously analyzes candidate behavior and recommends highly relevant jobs.
+4. AI analyzes uploaded resumes and provides professional resume improvement suggestions.
+5. AI learns candidate search behavior and continuously improves recommendations.
+6. AI recommends candidates to employers.
+7. AI provides skill-gap analysis and career growth recommendations.
+8. System must support millions of users with minimal latency.
+9. Platform must be developed as a Multi-Tenant SaaS Application.
+
+---
+
+# TECHNOLOGY STACK
+
+Frontend:
+
+* Next.js 15+
+* TypeScript
+* Tailwind CSS
+* ShadCN UI
+* React Query
+* Zustand
+
+Backend:
+
+* NestJS
+* TypeScript
+
+Database:
+
+* PostgreSQL
+* Prisma ORM
+
+Caching:
+
+* Redis
+
+Authentication:
+
+* JWT
+* OAuth
+* Google Login
+* LinkedIn Login
+* Role Based Access Control
+
+AI Stack:
+
+* Amazon Bedrock
+* Llama Models
+* Claude Models
+* Embedding Models
+* RAG Architecture
+
+Search Engine:
+
+* OpenSearch / Elasticsearch
+
+Notification:
+
+* Email
+* SMS
+* WhatsApp
+* Push Notifications
+
+Deployment:
+
+* Hostinger Dokploy Panel - VPS
+
+Architecture:
+
+* Monorepo Architecture
+
+Repository Structure:
+
+/apps
+/web
+/admin
+/api
+
+/packages
+/ui
+/auth
+/ai
+/database
+/shared
+
+---
+
+# USER ROLES
+
+1. Super Admin
+2. Tenant Admin
+3. Recruiter
+4. Employer
+5. Candidate
+6. Moderator
+7. Support Executive
+
+---
+
+# CORE MODULES
+
+======================================================
+MODULE 1: AUTHENTICATION & USER MANAGEMENT
+==========================================
+
+Features:
+
+* Registration
+* Login
+* Social Login
+* MFA
+* Password Recovery
+* Session Management
+* Role Management
+* Permission Matrix
+* User Verification
+* Email Verification
+* Phone Verification
+
+---
+
+======================================================
+MODULE 2: EMPLOYER MANAGEMENT
+=============================
+
+Features:
+
+* Company Registration
+* Company Profile
+* Company Branding
+* Company Verification
+* Recruiter Team Management
+* Subscription Plans
+* Company Dashboard
+
+Employer Dashboard Metrics:
+
+* Active Jobs
+* Total Applications
+* Candidate Pipeline
+* Interview Schedule
+* Hiring Analytics
+
+---
+
+======================================================
+MODULE 3: JOB MANAGEMENT
+========================
+
+Features:
+
+* Create Job
+* Edit Job
+* Clone Job
+* Expiry Management
+* Draft Jobs
+* Featured Jobs
+* Urgent Hiring
+
+Job Fields:
+
+* Job Title
+* Department
+* Category
+* Industry
+* Experience
+* Salary Range
+* Employment Type
+* Remote Type
+* Skills
+* Education
+* Location
+* Benefits
+* Responsibilities
+* Vacancy Count
+* Application Deadline
+
+Workflow:
+
+Draft
+→ Review
+→ Published
+→ Closed
+→ Archived
+
+---
+
+======================================================
+MODULE 4: ADVANCED JOB SEARCH ENGINE
+====================================
+
+Objective:
+
+Ultra-fast search with near-zero latency.
+
+Search Filters:
+
+* Keywords
+* Skills
+* Experience
+* Salary
+* Location
+* Company
+* Industry
+* Category
+* Employment Type
+* Remote Jobs
+* Freshers
+* Education
+* Posted Date
+
+Advanced Features:
+
+* Semantic Search
+* AI Search
+* Voice Search
+* Search Suggestions
+* Search Auto Complete
+* Synonym Search
+* Geo Search
+* Trending Jobs
+
+AI Search Flow:
+
+User Query
+→ NLP Processing
+→ Intent Detection
+→ Vector Search
+→ Ranking Engine
+→ Personalized Results
+
+---
+
+======================================================
+MODULE 5: CANDIDATE PROFILE MANAGEMENT
+======================================
+
+Features:
+
+* Profile Builder
+* Resume Upload
+* Portfolio
+* Certifications
+* Projects
+* Education
+* Work History
+* Skills Matrix
+
+Profile Completion Score
+
+0% → 100%
+
+---
+
+======================================================
+MODULE 6: AI RESUME ANALYZER
+============================
+
+AI Functions:
+
+Resume Upload
+→ Resume Parsing
+→ Skill Extraction
+→ Experience Analysis
+→ ATS Score
+→ Resume Quality Score
+
+AI Suggestions:
+
+* Missing Skills
+* Formatting Issues
+* Weak Keywords
+* Missing Achievements
+* Industry Recommendations
+
+Outputs:
+
+* ATS Score
+* Improvement Score
+* Recommended Skills
+* Suggested Certifications
+* Suggested Job Roles
+
+---
+
+======================================================
+MODULE 7: AI JOB RECOMMENDATION ENGINE
+======================================
+
+AI Inputs:
+
+Candidate Skills
+Resume
+Applied Jobs
+Saved Jobs
+Search History
+Location
+Experience
+
+Recommendation Pipeline:
+
+User Activity
+→ Behavioral Learning
+→ Embedding Generation
+→ Similarity Matching
+→ Recommendation Model
+→ Job Ranking
+
+Outputs:
+
+* Recommended Jobs
+* Trending Jobs
+* Similar Jobs
+* Career Path Suggestions
+
+---
+
+======================================================
+MODULE 8: AI CANDIDATE RECOMMENDATION
+=====================================
+
+Employer Side AI
+
+AI evaluates:
+
+* Resume Match
+* Skill Match
+* Experience Match
+* Culture Match
+* Location Match
+
+Outputs:
+
+* Match Percentage
+* Top Candidates
+* Skill Gap Report
+
+---
+
+======================================================
+MODULE 9: APPLICATION MANAGEMENT
+================================
+
+Application Pipeline:
+
+Applied
+→ Shortlisted
+→ Assessment
+→ Interview
+→ Selected
+→ Offered
+→ Hired
+→ Rejected
+
+Features:
+
+* Bulk Actions
+* Candidate Notes
+* Status Tracking
+* Communication Logs
+
+---
+
+======================================================
+MODULE 10: INTERVIEW MANAGEMENT
+===============================
+
+Features:
+
+* Schedule Interview
+* Calendar Sync
+* Zoom Integration
+* Google Meet Integration
+* Interview Feedback
+
+---
+
+======================================================
+MODULE 11: SKILL GAP ANALYSIS
+=============================
+
+AI compares:
+
+Current Skills
+vs
+Required Skills
+
+Output:
+
+* Missing Skills
+* Learning Roadmap
+* Certification Suggestions
+* Career Growth Plan
+
+---
+
+======================================================
+MODULE 12: AI CAREER COACH
+==========================
+
+Features:
+
+* Career Guidance
+* Resume Review
+* Interview Preparation
+* Salary Prediction
+* Career Path Prediction
+
+---
+
+======================================================
+MODULE 13: NOTIFICATION CENTER
+==============================
+
+Notifications:
+
+* Job Alerts
+* Interview Alerts
+* Application Status
+* AI Recommendations
+* Recruiter Messages
+
+Channels:
+
+* Email
+* SMS
+* WhatsApp
+* Push Notifications
+
+---
+
+======================================================
+MODULE 14: ADMIN PANEL
+======================
+
+Features:
+
+* User Management
+* Employer Management
+* Job Moderation
+* AI Monitoring
+* Reports
+* Subscription Management
+* Fraud Detection
+* Audit Logs
+
+---
+
+# SYSTEM FLOW
+
+Candidate Journey
+
+Register
+→ Complete Profile
+→ Upload Resume
+→ AI Resume Analysis
+→ Resume Improvement Suggestions
+→ Job Search
+→ AI Recommendations
+→ Apply Job
+→ Interview
+→ Offer
+→ Hired
+
+Employer Journey
+
+Register
+→ Company Verification
+→ Create Job
+→ Publish Job
+→ Receive Applications
+→ AI Candidate Ranking
+→ Interview
+→ Hire Candidate
+
+---
+
+# DATABASE DESIGN
+
+Core Tables
+
+users
+roles
+permissions
+sessions
+
+companies
+company_users
+
+jobs
+job_categories
+job_skills
+job_locations
+
+candidate_profiles
+candidate_skills
+candidate_experience
+candidate_education
+
+resumes
+resume_analysis
+
+job_applications
+
+interviews
+
+saved_jobs
+
+search_history
+
+candidate_activity_logs
+
+recommendations
+
+notifications
+
+subscriptions
+
+payments
+
+audit_logs
+
+system_settings
+
+ai_prompts
+
+ai_model_logs
+
+skill_gap_reports
+
+career_path_reports
+
+---
+
+# AI DATABASE TABLES
+
+ai_embeddings
+
+Columns:
+
+id
+entity_type
+entity_id
+embedding_vector
+created_at
+
+recommendation_scores
+
+candidate_id
+job_id
+score
+reason
+created_at
+
+behavioral_patterns
+
+candidate_id
+pattern_type
+confidence_score
+
+---
+
+# REDIS USAGE
+
+Cache:
+
+* Job Listings
+* Search Results
+* Trending Jobs
+* AI Recommendations
+* Session Cache
+* API Rate Limits
+
+Expected Response Time:
+
+< 100ms
+
+---
+
+# API DESIGN
+
+Authentication APIs
+
+POST /auth/register
+POST /auth/login
+
+Employer APIs
+
+POST /jobs
+PUT /jobs/:id
+DELETE /jobs/:id
+
+Candidate APIs
+
+POST /resume/upload
+POST /job/apply
+
+AI APIs
+
+POST /ai/resume-analysis
+POST /ai/recommend-jobs
+POST /ai/recommend-candidates
+POST /ai/skill-gap
+
+---
+
+# UI/UX REQUIREMENTS
+
+Design Style:
+
+* Modern
+* Enterprise
+* Futuristic
+* AI Driven
+* Minimalist
+* Glassmorphism
+* Mobile First
+
+Color Palette:
+
+Primary:
+#0F172A
+
+Secondary:
+#2563EB
+
+Accent:
+#00E5FF
+
+Success:
+#10B981
+
+Typography:
+
+Inter
+Poppins
+
+---
+
+# CANDIDATE DASHBOARD
+
+Widgets:
+
+* Profile Score
+* Recommended Jobs
+* ATS Score
+* Applications
+* Saved Jobs
+* Skill Gap Analysis
+* AI Career Coach
+
+---
+
+# EMPLOYER DASHBOARD
+
+Widgets:
+
+* Active Jobs
+* Total Applicants
+* AI Candidate Matches
+* Interviews
+* Hiring Funnel
+* Recruitment Analytics
+
+---
+
+# ADMIN DASHBOARD
+
+Widgets:
+
+* Total Users
+* Active Jobs
+* Revenue
+* AI Usage
+* System Health
+* Tenant Analytics
+
+---
+
+# NON-FUNCTIONAL REQUIREMENTS
+
+Performance:
+
+* <100ms search latency
+
+Scalability:
+
+* 10 Million Users
+
+Availability:
+
+* 99.99%
+
+Security:
+
+* OWASP Top 10 Compliance
+* GDPR Ready
+* DPDPA Compliance
+
+Monitoring:
+
+* Prometheus
+* Grafana
+* ELK Stack
+
+Logging:
+
+* Centralized Logs
+
+Backup:
+
+* Automated Daily Backups
+
+---
+
+# DELIVERABLES REQUIRED
+
+Generate:
+
+1. Complete SRS Document
+2. System Architecture Diagram
+3. HLD
+4. LLD
+5. Database ER Diagram
+6. Prisma Schema
+7. NestJS APIs
+8. NextJS UI Screens
+9. User Flow Diagrams
+10. AI Recommendation Architecture
+11. Redis Caching Architecture
+12. OpenSearch Architecture
+13. Microservice Design
+14. Monorepo Folder Structure
+15. Security Architecture
+16. DevOps Architecture
+17. CI/CD Pipeline
+18. Deployment Architecture
+19. Testing Strategy
+20. Production Readiness Checklist
+
+Build the platform following enterprise SaaS standards comparable to LinkedIn Jobs, Indeed, Naukri, Glassdoor, and modern AI-first recruitment systems.
