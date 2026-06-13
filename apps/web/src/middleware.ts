@@ -30,11 +30,13 @@ export async function middleware(request: NextRequest) {
     // Validate the session token against the DB via our internal API
     // (Edge middleware can't use Prisma directly, so we call the /api/auth/me route)
     try {
-      const meUrl = new URL('/api/auth/me', request.url);
+      const port = process.env.PORT || '3000';
+      const meUrl = new URL('/api/auth/me', `http://localhost:${port}`);
       const meRes = await fetch(meUrl.toString(), {
         headers: {
           // Forward the session cookie so the API can read it
           cookie: `session_token=${sessionToken}`,
+          host: request.headers.get('host') || '',
         },
         // Important: don't follow redirects inside middleware
         redirect: 'manual',
@@ -98,9 +100,13 @@ export async function middleware(request: NextRequest) {
   // ── 2. Auth pages: redirect already-logged-in users to their dashboard ──
   if (AUTH_ROUTES.some(r => pathname.startsWith(r)) && sessionToken) {
     try {
-      const meUrl = new URL('/api/auth/me', request.url);
+      const port = process.env.PORT || '3000';
+      const meUrl = new URL('/api/auth/me', `http://localhost:${port}`);
       const meRes = await fetch(meUrl.toString(), {
-        headers: { cookie: `session_token=${sessionToken}` },
+        headers: { 
+          cookie: `session_token=${sessionToken}`,
+          host: request.headers.get('host') || '',
+        },
         redirect: 'manual',
       });
 
