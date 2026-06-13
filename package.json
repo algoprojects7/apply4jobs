@@ -8,6 +8,8 @@
     "dev:web": "pnpm --filter @leadhire/web dev",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
+    "start:api": "pnpm --filter @leadhire/api start",
+    "start:web": "pnpm --filter @leadhire/web start",
     "db:generate": "pnpm --filter @leadhire/database db:generate",
     "db:migrate": "pnpm --filter @leadhire/database db:migrate"
   },
