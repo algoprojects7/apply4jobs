@@ -17,7 +17,20 @@ export default function LandingPage() {
         background: 'radial-gradient(circle at 80% 30%, rgba(124, 58, 237, 0.2) 0%, rgba(2, 5, 14, 1) 70%)',
         paddingBottom: '80px',
         paddingTop: '68px',
+        overflow: 'hidden',
       }}>
+        {/* Animated Neural SVG Network Background */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.15, pointerEvents: 'none', zIndex: 1 }}>
+          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            {/* Pulsing Neural Nodes */}
+            <circle cx="10%" cy="20%" r="4" fill="#8b5cf6" className="bg-neural-node" style={{ animationDelay: '0s' }} />
+            <circle cx="30%" cy="40%" r="5" fill="#3b82f6" className="bg-neural-node" style={{ animationDelay: '1s' }} />
+            <circle cx="50%" cy="15%" r="3.5" fill="#10b981" className="bg-neural-node" style={{ animationDelay: '0.5s' }} />
+            <circle cx="70%" cy="35%" r="4" fill="#8b5cf6" className="bg-neural-node" style={{ animationDelay: '2s' }} />
+            <circle cx="20%" cy="70%" r="4.5" fill="#10b981" className="bg-neural-node" style={{ animationDelay: '1.5s' }} />
+            <circle cx="90%" cy="60%" r="5.5" fill="#3b82f6" className="bg-neural-node" style={{ animationDelay: '2.5s' }} />
+          </svg>
+        </div>
         <Navbar />
 
         {/* Hero Body Grid */}
@@ -31,16 +44,42 @@ export default function LandingPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', position: 'relative', zIndex: 5 }}>
             <h1 style={{ fontSize: '58px', fontWeight: 800, lineHeight: '1.1', margin: 0, letterSpacing: '-1.5px' }}>
               Find Jobs.<br />
-              <span style={{ background: 'linear-gradient(90deg, #8b5cf6, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Build Future.</span><br />
-              <span style={{ background: 'linear-gradient(90deg, #60a5fa, #38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI-Powered.</span>
+              <span className="animate-gradient-text" style={{ background: 'linear-gradient(90deg, #8b5cf6, #3b82f6, #60a5fa, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Build Future.</span><br />
+              <span className="animate-gradient-text" style={{ background: 'linear-gradient(90deg, #60a5fa, #10b981, #38bdf8, #60a5fa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI-Powered.</span>
             </h1>
             
             <p style={{ color: '#94a3b8', fontSize: '16px', lineHeight: '1.6', margin: 0, maxWidth: '520px' }}>
               Discover opportunities, get AI-driven job recommendations, improve your resume, and accelerate your career growth.
             </p>
 
+            {/* GenZ Optimistic Badges Row */}
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', zIndex: 10, position: 'relative' }}>
+              <div className="animate-float" style={{
+                background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)',
+                color: '#10b981', padding: '6px 14px', borderRadius: '100px', fontSize: '12px', fontWeight: 700,
+                display: 'inline-flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.1)'
+              }}>
+                ✨ No Boring CVs
+              </div>
+              <div className="animate-float-reverse" style={{
+                background: 'rgba(124, 58, 237, 0.12)', border: '1px solid rgba(124, 58, 237, 0.3)',
+                color: '#a78bfa', padding: '6px 14px', borderRadius: '100px', fontSize: '12px', fontWeight: 700,
+                display: 'inline-flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 12px rgba(124, 58, 237, 0.1)'
+              }}>
+                ⚡ Matched in 2s
+              </div>
+              <div className="animate-float-fast" style={{
+                background: 'rgba(59, 130, 246, 0.12)', border: '1px solid rgba(59, 130, 246, 0.3)',
+                color: '#60a5fa', padding: '6px 14px', borderRadius: '100px', fontSize: '12px', fontWeight: 700,
+                display: 'inline-flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 12px rgba(59, 130, 246, 0.1)'
+              }}>
+                🎯 ATS Match: 95%+
+              </div>
+            </div>
+ 
             {/* Floating Search Console widget */}
             <div className="hero-search-widget">
+
               {/* Field 1: Search */}
               <div className="search-field" style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1.2, paddingLeft: '12px' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5">
@@ -83,8 +122,8 @@ export default function LandingPage() {
                 </svg>
               </button>
 
-              {/* Search button */}
-              <Link href="/candidate/dashboard" className="glow-btn" style={{
+              {/* Search button with interactive shimmer effect */}
+              <Link href="/candidate/dashboard" className="glow-btn animate-shimmer" style={{
                 background: '#6d28d9', color: '#ffffff', border: 'none', borderRadius: '12px',
                 padding: '12px 24px', fontSize: '14px', fontWeight: 600, cursor: 'pointer', textDecoration: 'none'
               }}>
@@ -165,7 +204,7 @@ export default function LandingPage() {
           {/* Hero Right Column (Image + floating widgets) */}
           <div className="hero-graphic-col" style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             {/* Main Portrait Card */}
-            <div style={{
+            <div className="hero-portrait-card-glow" style={{
               position: 'relative',
               width: '420px',
               height: '460px',
