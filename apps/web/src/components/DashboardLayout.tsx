@@ -31,6 +31,7 @@ export default function DashboardLayout({
   const [userName, setUserName] = useState<string>('Loading...');
   const [userInitials, setUserInitials] = useState<string>('..');
   const [loggingOut, setLoggingOut] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     fetch('/api/auth/me')
@@ -286,8 +287,14 @@ export default function DashboardLayout({
 
   return (
     <div className="dashboard-container">
+      {/* Sidebar Backdrop Overlay for Mobile */}
+      <div 
+        className={`dashboard-sidebar-overlay ${sidebarOpen ? 'open' : ''}`} 
+        onClick={() => setSidebarOpen(false)} 
+      />
+
       {/* Sidebar */}
-      <aside className="dashboard-sidebar">
+      <aside className={`dashboard-sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
           <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
             <div style={{
@@ -314,6 +321,7 @@ export default function DashboardLayout({
                 key={item.name}
                 href={item.href}
                 className={`sidebar-item ${isActive ? 'active' : ''}`}
+                onClick={() => setSidebarOpen(false)}
               >
                 {item.icon}
                 {item.name}
@@ -361,9 +369,21 @@ export default function DashboardLayout({
       {/* Main Content */}
       <main className="dashboard-content">
         <header className="dashboard-header">
-          <div>
-            <h1 style={{ margin: 0, fontSize: '20px', fontWeight: 700 }}>{headerTitle}</h1>
-            {headerSubtitle && <span style={{ fontSize: '12px', color: '#64748b' }}>{headerSubtitle}</span>}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {/* Hamburger Button for Mobile Drawer */}
+            <button 
+              className="dashboard-menu-toggle" 
+              onClick={() => setSidebarOpen(o => !o)}
+              aria-label="Toggle sidebar menu"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+              </svg>
+            </button>
+            <div>
+              <h1 style={{ margin: 0, fontSize: '20px', fontWeight: 700 }}>{headerTitle}</h1>
+              {headerSubtitle && <span style={{ fontSize: '12px', color: '#64748b' }}>{headerSubtitle}</span>}
+            </div>
           </div>
           {planOrNodeName && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>

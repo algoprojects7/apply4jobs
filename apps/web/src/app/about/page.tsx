@@ -80,7 +80,7 @@ export default function AboutPage() {
               We built Apply4Jobs to fix this — using large language models and proprietary skill-graph technology to create meaningful connections between people and opportunities at scale.
             </p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div className="responsive-grid-1-1" style={{ gap: '16px' }}>
             {values.map(v => (
               <div key={v.title} style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
                 <div style={{ fontSize: '28px', marginBottom: '12px' }}>{v.icon}</div>

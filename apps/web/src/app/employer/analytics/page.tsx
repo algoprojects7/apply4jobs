@@ -24,7 +24,7 @@ export default function EmployerAnalytics() {
       headerSubtitle="Analyze pipeline yield and candidate conversion metrics."
       planOrNodeName="Enterprise AI"
     >
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', maxWidth: '900px', margin: '0 auto' }}>
+      <div className="responsive-grid-1-1" style={{ maxWidth: '900px', margin: '0 auto' }}>
         <div className="glass-panel" style={{ padding: '25px' }}>
           <h3 className="brand-title" style={{ margin: '0 0 20px', fontSize: '18px', textTransform: 'none' }}>Funnel Ratios</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>

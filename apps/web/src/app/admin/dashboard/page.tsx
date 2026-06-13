@@ -133,7 +133,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Primary Admin Grid Layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.2fr', gap: '30px' }}>
+      <div className="responsive-grid-2-1-2">
         
         {/* Left Column: Management Tables */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
@@ -141,46 +141,48 @@ export default function AdminDashboard() {
           {/* Widget 1: Tenant Management Table */}
           <div className="glass-panel" style={{ padding: '25px' }}>
             <h3 className="brand-title" style={{ margin: '0 0 16px', fontSize: '18px', textTransform: 'none' }}>Employer Tenants (Companies)</h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-              <thead>
-                <tr style={{ borderBottom: '1px solid #d0d7de' }}>
-                  <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px' }}>Company</th>
-                  <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px' }}>Domain</th>
-                  <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px' }}>Listings</th>
-                  <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px' }}>Status</th>
-                  <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px', textAlign: 'right' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tenants.map(t => (
-                  <tr key={t.id} style={{ borderBottom: '1px solid #eaeef2' }}>
-                    <td style={{ padding: '14px 0', fontSize: '13.5px', fontWeight: 600 }}>{t.name}</td>
-                    <td style={{ padding: '14px 0', fontSize: '13.5px', color: '#94a3b8' }}>{t.domain}</td>
-                    <td style={{ padding: '14px 0', fontSize: '13.5px' }}>{t.jobs}</td>
-                    <td style={{ padding: '14px 0', fontSize: '13.5px' }}>
-                      <span style={{
-                        padding: '3px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 600,
-                        backgroundColor: t.status === 'Active' ? 'rgba(16, 185, 129, 0.15)' : t.status === 'Suspended' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-                        color: t.status === 'Active' ? '#10b981' : t.status === 'Suspended' ? '#ef4444' : '#f59e0b'
-                      }}>{t.status}</span>
-                    </td>
-                    <td style={{ padding: '14px 0', fontSize: '13.5px', textAlign: 'right' }}>
-                      {t.status === 'Pending Approval' ? (
-                        <button onClick={() => handleApproveTenant(t.id)} className="glow-btn" style={{ padding: '5px 10px', fontSize: '11px' }}>Approve</button>
-                      ) : (
-                        <button onClick={() => handleToggleTenant(t.id, t.status)} style={{
-                          padding: '5px 10px', fontSize: '11px', borderRadius: '8px', border: '1px solid #d0d7de',
-                          background: t.status === 'Active' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
-                          color: t.status === 'Active' ? '#ef4444' : '#10b981', cursor: 'pointer'
-                        }}>
-                          {t.status === 'Active' ? 'Suspend' : 'Activate'}
-                        </button>
-                      )}
-                    </td>
+            <div className="table-responsive">
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid #d0d7de' }}>
+                    <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px' }}>Company</th>
+                    <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px' }}>Domain</th>
+                    <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px' }}>Listings</th>
+                    <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px' }}>Status</th>
+                    <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px', textAlign: 'right' }}>Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {tenants.map(t => (
+                    <tr key={t.id} style={{ borderBottom: '1px solid #eaeef2' }}>
+                      <td style={{ padding: '14px 0', fontSize: '13.5px', fontWeight: 600 }}>{t.name}</td>
+                      <td style={{ padding: '14px 0', fontSize: '13.5px', color: '#94a3b8' }}>{t.domain}</td>
+                      <td style={{ padding: '14px 0', fontSize: '13.5px' }}>{t.jobs}</td>
+                      <td style={{ padding: '14px 0', fontSize: '13.5px' }}>
+                        <span style={{
+                          padding: '3px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 600,
+                          backgroundColor: t.status === 'Active' ? 'rgba(16, 185, 129, 0.15)' : t.status === 'Suspended' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                          color: t.status === 'Active' ? '#10b981' : t.status === 'Suspended' ? '#ef4444' : '#f59e0b'
+                        }}>{t.status}</span>
+                      </td>
+                      <td style={{ padding: '14px 0', fontSize: '13.5px', textAlign: 'right' }}>
+                        {t.status === 'Pending Approval' ? (
+                          <button onClick={() => handleApproveTenant(t.id)} className="glow-btn" style={{ padding: '5px 10px', fontSize: '11px' }}>Approve</button>
+                        ) : (
+                          <button onClick={() => handleToggleTenant(t.id, t.status)} style={{
+                            padding: '5px 10px', fontSize: '11px', borderRadius: '8px', border: '1px solid #d0d7de',
+                            background: t.status === 'Active' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+                            color: t.status === 'Active' ? '#ef4444' : '#10b981', cursor: 'pointer'
+                          }}>
+                            {t.status === 'Active' ? 'Suspend' : 'Activate'}
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
 
           {/* Widget 2: Job Postings Moderation */}

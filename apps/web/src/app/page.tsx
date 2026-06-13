@@ -21,14 +21,10 @@ export default function LandingPage() {
         <Navbar />
 
         {/* Hero Body Grid */}
-        <div style={{
+        <div className="responsive-hero-grid" style={{
           maxWidth: '1280px',
           margin: '40px auto 0',
           padding: '0 20px',
-          display: 'grid',
-          gridTemplateColumns: '1.1fr 0.9fr',
-          gap: '40px',
-          alignItems: 'center'
         }}>
           
           {/* Hero Left Column */}
@@ -44,19 +40,9 @@ export default function LandingPage() {
             </p>
 
             {/* Floating Search Console widget */}
-            <div style={{
-              background: '#ffffff',
-              borderRadius: '16px',
-              padding: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
-              gap: '8px',
-              maxWidth: '580px',
-              marginTop: '12px'
-            }}>
+            <div className="hero-search-widget">
               {/* Field 1: Search */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1.2, paddingLeft: '12px' }}>
+              <div className="search-field" style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1.2, paddingLeft: '12px' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5">
                   <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
                 </svg>
@@ -69,10 +55,10 @@ export default function LandingPage() {
                 />
               </div>
 
-              <div style={{ width: '1px', height: '28px', backgroundColor: '#e2e8f0' }} />
+              <div className="search-divider" style={{ width: '1px', height: '28px', backgroundColor: '#e2e8f0' }} />
 
               {/* Field 2: Location */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 0.8 }}>
+              <div className="search-field search-field-last" style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 0.8 }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
                 </svg>
@@ -362,13 +348,9 @@ export default function LandingPage() {
         </div>
 
         {/* Showcase Portals Section */}
-        <div style={{
+        <div className="responsive-showcase-grid" style={{
           maxWidth: '1200px',
           margin: '80px auto 0',
-          display: 'grid',
-          gridTemplateColumns: '1fr 1.2fr',
-          gap: '60px',
-          alignItems: 'center',
           color: '#0f172a'
         }}>
           {/* Stats & App Download info */}
@@ -505,7 +487,7 @@ export default function LandingPage() {
           </div>
 
           {/* Graphical Mockups (Browser Preview & Mobile App Preview overlays) */}
-          <div style={{ position: 'relative', display: 'flex', justifyContent: 'flex-start', paddingRight: '50px' }}>
+          <div className="mockup-container" style={{ position: 'relative', display: 'flex', justifyContent: 'flex-start', paddingRight: '50px' }}>
             {/* Desktop Dashboard Preview Container */}
             <div style={{
               width: '520px',
@@ -810,7 +792,7 @@ export default function LandingPage() {
         backgroundColor: '#f8fafc',
         padding: '0 20px 80px'
       }}>
-        <div style={{
+        <div className="cta-banner" style={{
           maxWidth: '1200px',
           margin: '0 auto',
           background: 'linear-gradient(135deg, #090e21 0%, #03050e 100%)',

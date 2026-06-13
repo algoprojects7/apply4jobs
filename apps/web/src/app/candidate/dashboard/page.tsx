@@ -71,13 +71,13 @@ export default function CandidateDashboard() {
       planOrNodeName="Pro Match"
     >
       {/* Grid Dashboard Layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '30px' }}>
+      <div className="responsive-grid-2-1">
         
         {/* Left Column: Stats & Recommendations */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
           
           {/* Row 1: Profile score & ATS Resume Upload */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+          <div className="responsive-grid-1-1">
             {/* Widget 1: Profile Completion Score */}
             <div className="glass-panel" style={{ padding: '25px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <div>
@@ -142,32 +142,34 @@ export default function CandidateDashboard() {
           {/* Widget 4: Applied Jobs Tracker */}
           <div className="glass-panel" style={{ padding: '25px' }}>
             <h3 className="brand-title" style={{ margin: '0 0 20px', fontSize: '18px', textTransform: 'none' }}>Active Applications</h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-              <thead>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                  <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px' }}>Position</th>
-                  <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px' }}>Company</th>
-                  <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px' }}>Status</th>
-                  <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px' }}>Applied Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {applications.map(app => (
-                  <tr key={app.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                    <td style={{ padding: '12px 0', fontSize: '13.5px' }}>{app.job}</td>
-                    <td style={{ padding: '12px 0', fontSize: '13.5px', color: '#94a3b8' }}>{app.company}</td>
-                    <td style={{ padding: '12px 0', fontSize: '13.5px' }}>
-                      <span style={{
-                        padding: '3px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 600,
-                        backgroundColor: app.status === 'Interview' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(124, 58, 237, 0.15)',
-                        color: app.status === 'Interview' ? '#10b981' : '#7c3aed'
-                      }}>{app.status}</span>
-                    </td>
-                    <td style={{ padding: '12px 0', fontSize: '13.5px', color: '#64748b' }}>{app.date}</td>
+            <div className="table-responsive">
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                    <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px' }}>Position</th>
+                    <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px' }}>Company</th>
+                    <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px' }}>Status</th>
+                    <th style={{ paddingBottom: '12px', color: '#94a3b8', fontWeight: 500, fontSize: '13px' }}>Applied Date</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {applications.map(app => (
+                    <tr key={app.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                      <td style={{ padding: '12px 0', fontSize: '13.5px' }}>{app.job}</td>
+                      <td style={{ padding: '12px 0', fontSize: '13.5px', color: '#94a3b8' }}>{app.company}</td>
+                      <td style={{ padding: '12px 0', fontSize: '13.5px' }}>
+                        <span style={{
+                          padding: '3px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 600,
+                          backgroundColor: app.status === 'Interview' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(124, 58, 237, 0.15)',
+                          color: app.status === 'Interview' ? '#10b981' : '#7c3aed'
+                        }}>{app.status}</span>
+                      </td>
+                      <td style={{ padding: '12px 0', fontSize: '13.5px', color: '#64748b' }}>{app.date}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 

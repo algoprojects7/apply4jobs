@@ -367,7 +367,7 @@ export default function Navbar() {
           </Link>
 
           {/* ── Desktop Nav ── */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'center' }}>
+          <div className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'center' }}>
             {NAV_ITEMS.map((item) => (
               <div key={item.label} style={{ position: 'relative' }}>
                 {item.href ? (
@@ -454,6 +454,7 @@ export default function Navbar() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
             <Link
               href="/login"
+              className="desktop-nav-btn"
               style={{
                 padding: '8px 18px',
                 borderRadius: '8px',
@@ -481,6 +482,7 @@ export default function Navbar() {
             </Link>
             <Link
               href="/register"
+              className="desktop-nav-btn"
               style={{
                 padding: '8px 20px',
                 borderRadius: '8px',
@@ -656,6 +658,7 @@ export default function Navbar() {
         @media (max-width: 900px) {
           .nav-hamburger { display: flex !important; }
           .desktop-nav { display: none !important; }
+          .desktop-nav-btn { display: none !important; }
         }
         @media (min-width: 901px) {
           .mobile-menu { display: none !important; }

@@ -85,7 +85,7 @@ export default function EmployerDashboard() {
       planOrNodeName="Enterprise AI"
     >
       {/* Primary Grid layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '30px' }}>
+      <div className="responsive-grid-1-2">
         
         {/* Left Column: Active Jobs management */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
