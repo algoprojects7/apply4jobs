@@ -72,7 +72,7 @@ export default function LandingPage() {
               </div>
 
               {/* Filter toggle button */}
-              <button style={{
+              <button className="filter-toggle-btn" style={{
                 background: 'transparent', border: 'none', outline: 'none', color: '#64748b',
                 display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: 600,
                 cursor: 'pointer', padding: '0 8px'
@@ -163,7 +163,7 @@ export default function LandingPage() {
           </div>
 
           {/* Hero Right Column (Image + floating widgets) */}
-          <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div className="hero-graphic-col" style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             {/* Main Portrait Card */}
             <div style={{
               position: 'relative',

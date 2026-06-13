@@ -84,14 +84,14 @@ export default function EmployerJobs() {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
             {activeJobs.map(job => (
-              <div key={job.id} className="glass-card" style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div key={job.id} className="glass-card responsive-flex-card" style={{ padding: '20px' }}>
                 <div>
                   <h4 style={{ margin: '0 0 5px', fontSize: '16px', fontWeight: 600 }}>{job.title}</h4>
                   <div style={{ fontSize: '13px', color: '#57606a' }}>
                     <span>📍 {job.location}</span> &bull; <span>👥 {job.applicants} Applicants</span>
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   <button className="glow-btn" style={{ padding: '8px 16px', fontSize: '12px' }}>View Applicants</button>
                   <button style={{ padding: '8px 16px', fontSize: '12px', background: 'transparent', border: '1px solid #d0d7de', color: '#1f2328', borderRadius: '12px', cursor: 'pointer' }}>Edit</button>
                 </div>

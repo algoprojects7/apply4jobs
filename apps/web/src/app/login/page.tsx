@@ -131,19 +131,7 @@ function LoginContent() {
       boxSizing: 'border-box'
     }}>
       
-      <div style={{
-        width: '100%',
-        maxWidth: '440px',
-        padding: '40px',
-        boxSizing: 'border-box',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '24px',
-        background: '#ffffff',
-        border: '1px solid #e2e8f0',
-        borderRadius: '20px',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.02)'
-      }}>
+      <div className="auth-card">
         
         {/* Brand logo */}
         <Link href="/" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none' }}>

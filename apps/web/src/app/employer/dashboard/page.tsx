@@ -171,7 +171,7 @@ export default function EmployerDashboard() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
               {currentCandidates.map((cand, idx) => (
-                <div key={idx} className="glass-card" style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div key={idx} className="glass-card responsive-flex-card" style={{ padding: '20px' }}>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 600 }}>{cand.name}</h4>

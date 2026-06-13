@@ -44,18 +44,8 @@ export default function CandidateJobsPage() {
     >
       <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
         {/* Search Bar Widget */}
-        <div style={{
-          background: '#ffffff',
-          borderRadius: '16px',
-          padding: '8px',
-          display: 'flex',
-          alignItems: 'center',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
-          border: '1px solid #d0d7de',
-          gap: '8px',
-          marginBottom: '40px'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1.2, paddingLeft: '12px' }}>
+        <div className="dashboard-search-widget">
+          <div className="search-field" style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1.2, paddingLeft: '12px' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#57606a" strokeWidth="2.5">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
@@ -68,9 +58,9 @@ export default function CandidateJobsPage() {
             />
           </div>
 
-          <div style={{ width: '1px', height: '28px', backgroundColor: '#d0d7de' }} />
+          <div className="search-divider" style={{ width: '1px', height: '28px', backgroundColor: '#d0d7de' }} />
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 0.8 }}>
+          <div className="search-field search-field-last" style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 0.8 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#57606a" strokeWidth="2.5">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
             </svg>

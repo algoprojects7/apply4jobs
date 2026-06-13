@@ -190,7 +190,7 @@ export default function AdminDashboard() {
             <h3 className="brand-title" style={{ margin: '0 0 16px', fontSize: '18px', textTransform: 'none' }}>Flagged Listings Console</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
               {flaggedJobs.map(job => (
-                <div key={job.id} className="glass-card" style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div key={job.id} className="glass-card responsive-flex-card" style={{ padding: '20px' }}>
                   <div style={{ flex: 1, paddingRight: '16px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                       <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>{job.title}</h4>

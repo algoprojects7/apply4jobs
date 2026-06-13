@@ -122,7 +122,7 @@ export default function CandidateDashboard() {
             <h3 className="brand-title" style={{ margin: '0 0 20px', fontSize: '18px', textTransform: 'none' }}>AI Recommended Openings</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
               {recommendations.map(rec => (
-                <div key={rec.id} className="glass-card" style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div key={rec.id} className="glass-card responsive-flex-card" style={{ padding: '20px' }}>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                       <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 600 }}>{rec.title}</h4>

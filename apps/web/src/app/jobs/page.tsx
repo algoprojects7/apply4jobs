@@ -84,17 +84,8 @@ export default function JobsPage() {
         </div>
 
         {/* Search Bar Widget */}
-        <div style={{
-          background: '#ffffff',
-          borderRadius: '16px',
-          padding: '8px',
-          display: 'flex',
-          alignItems: 'center',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
-          gap: '8px',
-          marginBottom: '40px'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1.2, paddingLeft: '12px' }}>
+        <div className="hero-search-widget">
+          <div className="search-field" style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1.2, paddingLeft: '12px' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
@@ -107,9 +98,9 @@ export default function JobsPage() {
             />
           </div>
 
-          <div style={{ width: '1px', height: '28px', backgroundColor: '#e2e8f0' }} />
+          <div className="search-divider" style={{ width: '1px', height: '28px', backgroundColor: '#e2e8f0' }} />
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 0.8 }}>
+          <div className="search-field search-field-last" style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 0.8 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
             </svg>
