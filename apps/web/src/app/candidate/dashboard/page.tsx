@@ -124,7 +124,7 @@ export default function CandidateDashboard() {
               {recommendations.map(rec => (
                 <div key={rec.id} className="glass-card responsive-flex-card" style={{ padding: '20px' }}>
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                       <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 600 }}>{rec.title}</h4>
                       <span style={{ fontSize: '11px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '2px 8px', borderRadius: '20px' }}>{rec.match}% Match</span>
                     </div>
