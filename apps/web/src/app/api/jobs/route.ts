@@ -78,7 +78,7 @@ export async function GET(request: Request) {
     }));
 
     // Sort by match score descending to present the best matches first!
-    formattedJobs.sort((a, b) => b.match - a.match);
+    formattedJobs.sort((a:any, b:any) => b.match - a.match);
 
     return NextResponse.json({ status: 'success', data: formattedJobs });
   } catch (err: any) {
@@ -91,7 +91,11 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, description, companyName, location, salaryMin, salaryMax, skillsRequired, remoteType } = body;
+    const { 
+      title, description, companyName, location, 
+      salaryMin, salaryMax, skillsRequired, remoteType,
+      employmentType, experienceMin, experienceMax, vacancyCount 
+    } = body;
 
     // Resolve or create company
     let company = await prisma.company.findFirst({
@@ -127,6 +131,10 @@ export async function POST(request: Request) {
         salaryMax: salaryMax ? parseInt(salaryMax) : null,
         skillsRequired: skillsRequired || [],
         remoteType: remoteType || 'Remote',
+        employmentType: employmentType || 'Full-time',
+        experienceMin: experienceMin ? parseInt(experienceMin) : null,
+        experienceMax: experienceMax ? parseInt(experienceMax) : null,
+        vacancyCount: vacancyCount ? parseInt(vacancyCount) : 1,
         status: 'Published'
       }
     });

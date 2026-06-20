@@ -4,7 +4,8 @@
   "description": "LeadHire AI Multi-Tenant SaaS Job Marketplace",
   "private": true,
   "scripts": {
-    "dev:api": "pnpm --filter @leadhire/api dev",
+    "dev": "concurrently \"pnpm dev:api\" \"pnpm dev:web\"",
+    "dev:api": "pnpm --filter @leadhire/api start:dev",
     "dev:web": "pnpm --filter @leadhire/web dev",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
@@ -14,6 +15,7 @@
     "db:migrate": "pnpm --filter @leadhire/database db:migrate"
   },
   "devDependencies": {
+    "concurrently": "^10.0.3",
     "typescript": "^5.7.3"
   },
   "pnpm": {
