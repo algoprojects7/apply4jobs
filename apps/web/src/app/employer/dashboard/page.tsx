@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
+import { JobDescriptionEditor } from '@/components/editors/JobDescriptionEditor';
+import { Info } from 'lucide-react';
 
 export default function EmployerDashboard() {
   const [viewMode, setViewMode] = useState<'dashboard' | 'posting'>('dashboard');
@@ -11,19 +13,93 @@ export default function EmployerDashboard() {
   const [applicants, setApplicants] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [companyName, setCompanyName] = useState<string>('Employer');
+  const [successMsg, setSuccessMsg] = useState<string>('');
+  const msgRef = useRef<HTMLDivElement>(null);
 
-  // Form states
-  const [newTitle, setNewTitle] = useState('');
-  const [newLocation, setNewLocation] = useState('');
-  const [employmentType, setEmploymentType] = useState('Full-time');
-  const [remoteType, setRemoteType] = useState('Remote');
-  const [salaryMin, setSalaryMin] = useState('');
-  const [salaryMax, setSalaryMax] = useState('');
-  const [experienceMin, setExperienceMin] = useState('');
-  const [experienceMax, setExperienceMax] = useState('');
-  const [vacancyCount, setVacancyCount] = useState('1');
-  const [description, setDescription] = useState('');
-  const [skillsRequired, setSkillsRequired] = useState('');
+  const demoHtml = `
+    <h1>Senior Software Engineer</h1>
+    <p><strong>Company:</strong> ABC Technologies Pvt. Ltd.<br>
+    <strong>Location:</strong> Guwahati, Assam, India<br>
+    <strong>Employment Type:</strong> Full-Time<br>
+    <strong>Experience:</strong> 3–5 Years<br>
+    <strong>Salary:</strong> ₹8,00,000 – ₹12,00,000 per annum</p>
+    <hr>
+    <h2>About the Role</h2>
+    <p>We are seeking a talented and motivated Senior Software Engineer to join our growing technology team. The ideal candidate will be responsible for designing, developing, and maintaining scalable web applications while collaborating with cross-functional teams to deliver high-quality software solutions.</p>
+    <hr>
+    <h2>Key Responsibilities</h2>
+    <ul>
+    <li>Design, develop, and maintain web applications.</li>
+    <li>Build scalable REST APIs and backend services.</li>
+    <li>Collaborate with product managers, designers, and developers.</li>
+    <li>Optimize application performance and database queries.</li>
+    <li>Write clean, maintainable, and well-documented code.</li>
+    <li>Participate in code reviews and technical discussions.</li>
+    <li>Troubleshoot and resolve production issues.</li>
+    </ul>
+    <hr>
+    <h2>Required Skills & Qualifications</h2>
+    <ul>
+    <li>Bachelor's degree in Computer Science, Engineering, or related field.</li>
+    <li>Strong proficiency in JavaScript and TypeScript.</li>
+    <li>Experience with Next.js and React.</li>
+    <li>Experience with Node.js or NestJS.</li>
+    <li>Knowledge of PostgreSQL or other relational databases.</li>
+    <li>Understanding of RESTful API development.</li>
+    <li>Familiarity with Git version control.</li>
+    </ul>
+    <hr>
+    <h2>Preferred Skills</h2>
+    <ul>
+    <li>Experience with Redis and caching strategies.</li>
+    <li>Knowledge of Docker and containerized deployments.</li>
+    <li>Familiarity with cloud platforms such as AWS, Azure, or Google Cloud.</li>
+    <li>Understanding of CI/CD pipelines.</li>
+    <li>Experience working in Agile environments.</li>
+    </ul>
+    <hr>
+    <h2>Experience Requirements</h2>
+    <ul>
+    <li>Minimum 3 years of professional software development experience.</li>
+    <li>Experience building enterprise-grade applications is preferred.</li>
+    </ul>
+    <hr>
+    <h2>Benefits</h2>
+    <ul>
+    <li>Competitive salary package.</li>
+    <li>Performance-based incentives.</li>
+    <li>Health insurance coverage.</li>
+    <li>Flexible working hours.</li>
+    <li>Hybrid/Remote work opportunities.</li>
+    <li>Professional training and certification support.</li>
+    <li>Career growth opportunities.</li>
+    </ul>
+    <hr>
+    <h2>Workplace Type</h2>
+    <ul>
+    <li>Hybrid</li>
+    <li>Remote</li>
+    <li>On-site</li>
+    </ul>
+    <hr>
+    <h2>Application Process</h2>
+    <ol>
+    <li>Application Submission</li>
+    <li>Resume Screening</li>
+    <li>Technical Assessment</li>
+    <li>Technical Interview</li>
+    <li>HR Discussion</li>
+    <li>Offer Release</li>
+    </ol>
+    <hr>
+    <h2>Equal Opportunity Employer</h2>
+    <p>We are committed to creating an inclusive workplace. We welcome applications from qualified candidates regardless of gender, race, religion, disability, age, or background.</p>
+    <hr>
+    <h3>Apply Now</h3>
+    <p>Interested candidates are encouraged to submit their application along with an updated resume. Shortlisted candidates will be contacted for the next stage of the selection process.</p>
+  `;
+
+  const [description, setDescription] = useState(demoHtml);
 
   const loadDashboardData = () => {
     setLoading(true);
@@ -50,6 +126,12 @@ export default function EmployerDashboard() {
     loadDashboardData();
   }, []);
 
+  useEffect(() => {
+    if (successMsg && msgRef.current) {
+      msgRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [successMsg]);
+
   const currentCandidates = applicants
     .filter(app => app.jobId === selectedJob)
     .map(app => ({
@@ -59,46 +141,51 @@ export default function EmployerDashboard() {
       skills: ['TypeScript', 'Node.js', 'React', 'Prisma']
     }));
 
+  const extractTitle = (html: string) => {
+    if (!html) return 'Untitled Job Position';
+    const h1Match = html.match(/<h1>(.*?)<\/h1>/);
+    if (h1Match && h1Match[1]) {
+      return h1Match[1].replace(/<[^>]+>/g, '').trim() || 'Untitled Job Position';
+    }
+    const h2Match = html.match(/<h2>(.*?)<\/h2>/);
+    if (h2Match && h2Match[1]) {
+      return h2Match[1].replace(/<[^>]+>/g, '').trim() || 'Untitled Job Position';
+    }
+    const textContent = html.replace(/<[^>]+>/g, '\n').split('\n').map(s => s.trim()).filter(s => s.length > 0);
+    return textContent.length > 0 ? textContent[0] : 'Untitled Job Position';
+  };
+
   const handleCreateJob = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTitle.trim()) return;
+
+    const dynamicTitle = extractTitle(description);
 
     try {
-      const skillsArray = skillsRequired.split(',').map(s => s.trim()).filter(s => s.length > 0);
       const res = await fetch('/api/jobs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: newTitle,
-          location: newLocation || 'Remote',
+          title: dynamicTitle,
+          location: 'Guwahati, Assam, India',
           companyName: companyName,
-          employmentType,
-          remoteType,
-          salaryMin: salaryMin || null,
-          salaryMax: salaryMax || null,
-          experienceMin: experienceMin || null,
-          experienceMax: experienceMax || null,
-          vacancyCount: vacancyCount || '1',
+          employmentType: 'Full-time',
+          remoteType: 'Hybrid',
+          salaryMin: 800000,
+          salaryMax: 1200000,
+          experienceMin: 3,
+          experienceMax: 5,
+          vacancyCount: 1,
           description: description || '',
-          skillsRequired: skillsArray.length > 0 ? skillsArray : ['TypeScript', 'React', 'Node.js']
+          skillsRequired: ['TypeScript', 'React', 'Node.js']
         })
       });
       const data = await res.json();
       if (data.status === 'success') {
         loadDashboardData();
         setViewMode('dashboard');
-        // Reset form
-        setNewTitle('');
-        setNewLocation('');
-        setEmploymentType('Full-time');
-        setRemoteType('Remote');
-        setSalaryMin('');
-        setSalaryMax('');
-        setExperienceMin('');
-        setExperienceMax('');
-        setVacancyCount('1');
-        setDescription('');
-        setSkillsRequired('');
+        setDescription(demoHtml);
+        setSuccessMsg('Job posting has been done successfully');
+        setTimeout(() => setSuccessMsg(''), 5000);
       }
     } catch (err) {
       console.error('Error posting new job:', err);
@@ -130,76 +217,11 @@ export default function EmployerDashboard() {
 
           <form onSubmit={handleCreateJob} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             
-            {/* Basic Info Section */}
             <div style={{ padding: '20px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px' }}>
-              <h3 style={{ margin: '0 0 15px', fontSize: '15px', color: '#e2e8f0', fontWeight: 600 }}>Basic Information</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                <div style={{ gridColumn: 'span 2' }}>
-                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '6px' }}>Job Title *</label>
-                  <input type="text" value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="e.g. Senior Frontend Engineer" required style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: '#02040a', color: 'white', fontSize: '13px', boxSizing: 'border-box' }} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '6px' }}>Employment Type</label>
-                  <select value={employmentType} onChange={e => setEmploymentType(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: '#02040a', color: 'white', fontSize: '13px', boxSizing: 'border-box' }}>
-                    <option value="Full-time">Full-time</option>
-                    <option value="Part-time">Part-time</option>
-                    <option value="Contract">Contract</option>
-                    <option value="Internship">Internship</option>
-                  </select>
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '6px' }}>Work Model</label>
-                  <select value={remoteType} onChange={e => setRemoteType(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: '#02040a', color: 'white', fontSize: '13px', boxSizing: 'border-box' }}>
-                    <option value="Remote">Remote</option>
-                    <option value="Hybrid">Hybrid</option>
-                    <option value="Onsite">On-site</option>
-                  </select>
-                </div>
-                <div style={{ gridColumn: 'span 2' }}>
-                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '6px' }}>Location</label>
-                  <input type="text" value={newLocation} onChange={e => setNewLocation(e.target.value)} placeholder="e.g. San Francisco, CA or Worldwide" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: '#02040a', color: 'white', fontSize: '13px', boxSizing: 'border-box' }} />
-                </div>
-              </div>
-            </div>
-
-            {/* Compensation & Requirements */}
-            <div style={{ padding: '20px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px' }}>
-              <h3 style={{ margin: '0 0 15px', fontSize: '15px', color: '#e2e8f0', fontWeight: 600 }}>Compensation & Requirements</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '6px' }}>Min Salary (USD)</label>
-                  <input type="number" value={salaryMin} onChange={e => setSalaryMin(e.target.value)} placeholder="e.g. 100000" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: '#02040a', color: 'white', fontSize: '13px', boxSizing: 'border-box' }} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '6px' }}>Max Salary (USD)</label>
-                  <input type="number" value={salaryMax} onChange={e => setSalaryMax(e.target.value)} placeholder="e.g. 150000" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: '#02040a', color: 'white', fontSize: '13px', boxSizing: 'border-box' }} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '6px' }}>Min Experience (Years)</label>
-                  <input type="number" value={experienceMin} onChange={e => setExperienceMin(e.target.value)} placeholder="e.g. 3" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: '#02040a', color: 'white', fontSize: '13px', boxSizing: 'border-box' }} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '6px' }}>Max Experience (Years)</label>
-                  <input type="number" value={experienceMax} onChange={e => setExperienceMax(e.target.value)} placeholder="e.g. 7" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: '#02040a', color: 'white', fontSize: '13px', boxSizing: 'border-box' }} />
-                </div>
-                <div style={{ gridColumn: 'span 2' }}>
-                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '6px' }}>Number of Vacancies</label>
-                  <input type="number" value={vacancyCount} onChange={e => setVacancyCount(e.target.value)} placeholder="1" min="1" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: '#02040a', color: 'white', fontSize: '13px', boxSizing: 'border-box' }} />
-                </div>
-              </div>
-            </div>
-
-            {/* Details */}
-            <div style={{ padding: '20px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px' }}>
-              <h3 style={{ margin: '0 0 15px', fontSize: '15px', color: '#e2e8f0', fontWeight: 600 }}>Job Details</h3>
+              <h3 style={{ margin: '0 0 15px', fontSize: '15px', color: '#e2e8f0', fontWeight: 600 }}>Job Description Details</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '6px' }}>Required Skills (comma separated)</label>
-                  <input type="text" value={skillsRequired} onChange={e => setSkillsRequired(e.target.value)} placeholder="e.g. React, Node.js, TypeScript, PostgreSQL" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: '#02040a', color: 'white', fontSize: '13px', boxSizing: 'border-box' }} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '6px' }}>Job Description</label>
-                  <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Describe the responsibilities, expectations, and perks..." rows={8} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: '#02040a', color: 'white', fontSize: '13px', fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box' }}></textarea>
+                  <JobDescriptionEditor value={description} onChange={setDescription} />
                 </div>
               </div>
             </div>
@@ -228,6 +250,12 @@ export default function EmployerDashboard() {
       headerSubtitle={`${companyName} (Tenant Hub)`}
       planOrNodeName="Enterprise AI"
     >
+      {successMsg && (
+        <div ref={msgRef} style={{ padding: '12px 16px', background: '#ecfdf5', color: '#065f46', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', border: '1px solid #a7f3d0' }}>
+          <Info size={18} />
+          <span style={{ fontSize: '13.5px', fontWeight: 500 }}>{successMsg}</span>
+        </div>
+      )}
       <div className="responsive-grid-1-2">
         <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
           
