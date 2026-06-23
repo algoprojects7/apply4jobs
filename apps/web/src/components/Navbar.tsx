@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface DropdownItem {
   label: string;
@@ -276,6 +276,59 @@ export default function Navbar() {
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const navRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
+  const router = useRouter();
+
+  // Authentication State
+  const [user, setUser] = useState<{ id: string; name: string; email: string; role: string } | null>(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  // Fetch current user session
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'authenticated') {
+          setUser(data.user);
+        } else {
+          setUser(null);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to fetch user session:', err);
+        setUser(null);
+      });
+  }, [pathname]); // Check on pathname changes to keep session sync'd
+
+  // Logout Handler
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (loggingOut) return;
+    setLoggingOut(true);
+
+    try {
+      const res = await fetch('/api/auth/logout', { method: 'POST' });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setUser(null);
+        setUserMenuOpen(false);
+        setMobileOpen(false);
+        window.location.href = '/';
+      } else {
+        alert('Logout failed');
+        setLoggingOut(false);
+      }
+    } catch (err) {
+      console.error('Logout error:', err);
+      window.location.href = '/';
+    }
+  };
+
+  const getUserInitials = (name: string) => {
+    const parts = name.split(' ');
+    const initials = parts.map((p) => p[0]).join('').substring(0, 2).toUpperCase();
+    return initials || 'US';
+  };
 
   // Scroll detection for glassmorphism effect
   useEffect(() => {
@@ -290,6 +343,7 @@ export default function Navbar() {
       if (navRef.current && !navRef.current.contains(e.target as Node)) {
         setOpenMenu(null);
         setMobileOpen(false);
+        setUserMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handler);
@@ -300,6 +354,7 @@ export default function Navbar() {
   useEffect(() => {
     setMobileOpen(false);
     setOpenMenu(null);
+    setUserMenuOpen(false);
   }, [pathname]);
 
   return (
@@ -452,60 +507,209 @@ export default function Navbar() {
 
           {/* ── Right Actions ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
-            <Link
-              href="/login"
-              className="desktop-nav-btn"
-              style={{
-                padding: '8px 18px',
-                borderRadius: '8px',
-                color: '#475569',
-                textDecoration: 'none',
-                fontSize: '14px',
-                fontWeight: 600,
-                border: '1px solid #cbd5e1',
-                background: '#ffffff',
-                transition: 'all 0.2s',
-                display: 'inline-block',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.color = '#0f172a';
-                e.currentTarget.style.borderColor = '#7c3aed';
-                e.currentTarget.style.background = '#f8fafc';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.color = '#475569';
-                e.currentTarget.style.borderColor = '#cbd5e1';
-                e.currentTarget.style.background = '#ffffff';
-              }}
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/register"
-              className="desktop-nav-btn"
-              style={{
-                padding: '8px 20px',
-                borderRadius: '8px',
-                color: '#ffffff',
-                textDecoration: 'none',
-                fontSize: '14px',
-                fontWeight: 700,
-                background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
-                boxShadow: '0 4px 16px rgba(124,58,237,0.4)',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                display: 'inline-block',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.transform = 'translateY(-1px)';
-                e.currentTarget.style.boxShadow = '0 6px 20px rgba(124,58,237,0.55)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 16px rgba(124,58,237,0.4)';
-              }}
-            >
-              Get Started
-            </Link>
+            {user ? (
+              <div className="desktop-nav-btn" style={{ position: 'relative', display: 'inline-block' }}>
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  style={{
+                    width: '38px',
+                    height: '38px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
+                    border: '2px solid #e2e8f0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#ffffff',
+                    fontWeight: 'bold',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 12px rgba(124, 58, 237, 0.2)',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                    fontFamily: 'inherit',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                    e.currentTarget.style.boxShadow = '0 6px 16px rgba(124, 58, 237, 0.3)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(124, 58, 237, 0.2)';
+                  }}
+                >
+                  {getUserInitials(user.name)}
+                </button>
+                
+                {userMenuOpen && (
+                  <div style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 12px)',
+                    right: 0,
+                    background: '#ffffff',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '16px',
+                    padding: '12px',
+                    minWidth: '240px',
+                    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.01)',
+                    zIndex: 1000,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '6px',
+                  }}>
+                    <div style={{ padding: '4px 8px 10px', borderBottom: '1px solid #f1f5f9', marginBottom: '4px' }}>
+                      <div style={{ fontSize: '14px', fontWeight: 700, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {user.name}
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginBottom: '6px' }}>
+                        {user.email}
+                      </div>
+                      <span style={{
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        background: user.role === 'admin' ? '#fee2e2' : user.role === 'employer' ? '#f3e8ff' : '#dbeafe',
+                        color: user.role === 'admin' ? '#991b1b' : user.role === 'employer' ? '#6b21a8' : '#1e40af',
+                        padding: '2px 8px',
+                        borderRadius: '12px',
+                        display: 'inline-block',
+                      }}>
+                        {user.role}
+                      </span>
+                    </div>
+
+                    <Link
+                      href={
+                        user.role === 'candidate' ? '/candidate/dashboard' :
+                        user.role === 'employer' ? '/employer/dashboard' :
+                        '/admin/dashboard'
+                      }
+                      style={{ textDecoration: 'none' }}
+                      onClick={() => setUserMenuOpen(false)}
+                    >
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        padding: '8px 12px',
+                        borderRadius: '8px',
+                        color: '#475569',
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        transition: 'background 0.15s, color 0.15s',
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.background = '#f1f5f9';
+                        e.currentTarget.style.color = '#0f172a';
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.background = 'transparent';
+                        e.currentTarget.style.color = '#475569';
+                      }}
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="3" width="7" height="9" rx="1"/>
+                          <rect x="14" y="3" width="7" height="5" rx="1"/>
+                          <rect x="14" y="12" width="7" height="9" rx="1"/>
+                          <rect x="3" y="16" width="7" height="5" rx="1"/>
+                        </svg>
+                        Go to Dashboard
+                      </div>
+                    </Link>
+
+                    <button
+                      onClick={handleLogout}
+                      disabled={loggingOut}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        padding: '8px 12px',
+                        borderRadius: '8px',
+                        color: '#ef4444',
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        fontFamily: 'inherit',
+                        width: '100%',
+                        transition: 'background 0.15s',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = '#fef2f2')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                      </svg>
+                      {loggingOut ? 'Signing out...' : 'Sign Out'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="desktop-nav-btn"
+                  style={{
+                    padding: '8px 18px',
+                    borderRadius: '8px',
+                    color: '#475569',
+                    textDecoration: 'none',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    border: '1px solid #cbd5e1',
+                    background: '#ffffff',
+                    transition: 'all 0.2s',
+                    display: 'inline-block',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.color = '#0f172a';
+                    e.currentTarget.style.borderColor = '#7c3aed';
+                    e.currentTarget.style.background = '#f8fafc';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.color = '#475569';
+                    e.currentTarget.style.borderColor = '#cbd5e1';
+                    e.currentTarget.style.background = '#ffffff';
+                  }}
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/register"
+                  className="desktop-nav-btn"
+                  style={{
+                    padding: '8px 20px',
+                    borderRadius: '8px',
+                    color: '#ffffff',
+                    textDecoration: 'none',
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
+                    boxShadow: '0 4px 16px rgba(124,58,237,0.4)',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                    display: 'inline-block',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(124,58,237,0.55)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(124,58,237,0.4)';
+                  }}
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
 
             {/* Mobile Hamburger */}
             <button
@@ -629,27 +833,98 @@ export default function Navbar() {
               </div>
             ))}
 
-            {/* Mobile CTA buttons */}
-            <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-              <Link href="/login" style={{
-                flex: 1, textAlign: 'center', padding: '12px',
-                borderRadius: '10px', color: '#0f172a', textDecoration: 'none',
-                fontSize: '14px', fontWeight: 600,
-                border: '1px solid #cbd5e1',
-                background: '#ffffff',
-              }}>
-                Sign In
-              </Link>
-              <Link href="/register" style={{
-                flex: 1, textAlign: 'center', padding: '12px',
-                borderRadius: '10px', color: '#ffffff', textDecoration: 'none',
-                fontSize: '14px', fontWeight: 700,
-                background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
-                boxShadow: '0 4px 12px rgba(124,58,237,0.4)',
-              }}>
-                Get Started
-              </Link>
-            </div>
+            {user ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '20px', padding: '16px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#ffffff',
+                    fontWeight: 'bold',
+                    fontSize: '15px',
+                  }}>
+                    {getUserInitials(user.name)}
+                  </div>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div style={{ fontSize: '14px', fontWeight: 700, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {user.name}
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {user.email}
+                    </div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
+                  <Link
+                    href={
+                      user.role === 'candidate' ? '/candidate/dashboard' :
+                      user.role === 'employer' ? '/employer/dashboard' :
+                      '/admin/dashboard'
+                    }
+                    style={{
+                      flex: 1,
+                      textAlign: 'center',
+                      padding: '10px',
+                      borderRadius: '8px',
+                      color: '#0f172a',
+                      textDecoration: 'none',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      border: '1px solid #cbd5e1',
+                      background: '#ffffff',
+                    }}
+                  >
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    disabled={loggingOut}
+                    style={{
+                      flex: 1,
+                      textAlign: 'center',
+                      padding: '10px',
+                      borderRadius: '8px',
+                      color: '#ffffff',
+                      textDecoration: 'none',
+                      fontSize: '13px',
+                      fontWeight: 700,
+                      background: '#ef4444',
+                      border: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {loggingOut ? 'Signing out...' : 'Sign Out'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* Mobile CTA buttons */
+              <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                <Link href="/login" style={{
+                  flex: 1, textAlign: 'center', padding: '12px',
+                  borderRadius: '10px', color: '#0f172a', textDecoration: 'none',
+                  fontSize: '14px', fontWeight: 600,
+                  border: '1px solid #cbd5e1',
+                  background: '#ffffff',
+                }}>
+                  Sign In
+                </Link>
+                <Link href="/register" style={{
+                  flex: 1, textAlign: 'center', padding: '12px',
+                  borderRadius: '10px', color: '#ffffff', textDecoration: 'none',
+                  fontSize: '14px', fontWeight: 700,
+                  background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
+                  boxShadow: '0 4px 12px rgba(124,58,237,0.4)',
+                }}>
+                  Get Started
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </nav>
