@@ -7,35 +7,50 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search') || '';
-    
-    // AI Advanced Search Query Expansion
-    let searchTerms = [search];
-    if (search.trim()) {
-      searchTerms = await expandSearchQuery(search);
-    }
+    const location = searchParams.get('location') || '';
     
     // Build query conditions
-    const orConditions: any[] = [
-      { title: { contains: search, mode: 'insensitive' } },
-      { description: { contains: search, mode: 'insensitive' } },
-      { company: { name: { contains: search, mode: 'insensitive' } } }
-    ];
-    
-    // Add expanded search terms if available
-    for (const term of searchTerms) {
-      if (term.trim()) {
-        orConditions.push({ title: { contains: term, mode: 'insensitive' } });
-        orConditions.push({ description: { contains: term, mode: 'insensitive' } });
-        orConditions.push({ skillsRequired: { hasSome: [term] } });
+    const whereClause: any = {
+      status: 'Published'
+    };
+
+    if (search.trim()) {
+      // AI Advanced Search Query Expansion
+      let searchTerms = [search];
+      try {
+        searchTerms = await expandSearchQuery(search);
+      } catch (e) {
+        console.warn('Error expanding search query:', e);
       }
+
+      const orConditions: any[] = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+        { company: { name: { contains: search, mode: 'insensitive' } } }
+      ];
+      
+      // Add expanded search terms if available
+      for (const term of searchTerms) {
+        if (term.trim()) {
+          orConditions.push({ title: { contains: term, mode: 'insensitive' } });
+          orConditions.push({ description: { contains: term, mode: 'insensitive' } });
+          orConditions.push({ skillsRequired: { hasSome: [term] } });
+        }
+      }
+
+      whereClause.OR = orConditions;
+    }
+
+    if (location.trim()) {
+      whereClause.location = {
+        contains: location,
+        mode: 'insensitive'
+      };
     }
 
     // Fetch jobs from database
     const jobs = await prisma.job.findMany({
-      where: {
-        status: 'Published',
-        OR: orConditions
-      },
+      where: whereClause,
       include: {
         company: true
       },
@@ -69,6 +84,7 @@ export async function GET(request: Request) {
         title: job.title,
         company: job.company.name,
         location: job.location || 'Remote',
+        bannerUrl: job.bannerUrl || null,
         match: matchScore,
         tags: job.skillsRequired,
         salary: job.salaryMin && job.salaryMax 
@@ -94,7 +110,8 @@ export async function POST(request: Request) {
     const { 
       title, description, companyName, location, 
       salaryMin, salaryMax, skillsRequired, remoteType,
-      employmentType, experienceMin, experienceMax, vacancyCount 
+      employmentType, experienceMin, experienceMax, vacancyCount,
+      bannerUrl
     } = body;
 
     // Resolve or create company
@@ -126,6 +143,7 @@ export async function POST(request: Request) {
         companyId: company.id,
         title,
         description: description || 'No description provided.',
+        bannerUrl: bannerUrl || null,
         location,
         salaryMin: salaryMin ? parseInt(salaryMin) : null,
         salaryMax: salaryMax ? parseInt(salaryMax) : null,

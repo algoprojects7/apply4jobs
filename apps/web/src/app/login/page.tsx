@@ -102,12 +102,13 @@ function LoginContent() {
       const data = await res.json();
       
       if (data.status === 'success') {
+        const redirect = searchParams ? searchParams.get('redirect') : null;
         if (role === 'candidate') {
-          window.location.href = '/candidate/dashboard';
+          window.location.href = redirect || '/candidate/dashboard';
         } else if (role === 'employer') {
-          window.location.href = '/employer/dashboard';
+          window.location.href = redirect || '/employer/dashboard';
         } else {
-          window.location.href = '/admin/dashboard';
+          window.location.href = redirect || '/admin/dashboard';
         }
       } else {
         setError(data.message || 'Authentication failed. Please verify credentials.');

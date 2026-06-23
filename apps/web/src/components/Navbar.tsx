@@ -189,13 +189,13 @@ function DropdownMenu({ items, isOpen }: { items: DropdownItem[]; isOpen: boolea
       position: 'absolute',
       top: 'calc(100% + 12px)',
       left: '50%',
-      background: 'rgba(9, 11, 22, 0.97)',
+      background: '#ffffff',
       backdropFilter: 'blur(20px)',
-      border: '1px solid rgba(124, 58, 237, 0.2)',
+      border: '1px solid #e2e8f0',
       borderRadius: '16px',
       padding: '8px',
       minWidth: '280px',
-      boxShadow: '0 24px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(124,58,237,0.1)',
+      boxShadow: '0 10px 30px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.01)',
       opacity: isOpen ? 1 : 0,
       transform: isOpen ? 'translateX(-50%) translateY(0)' : 'translateX(-50%) translateY(-8px)',
       pointerEvents: isOpen ? 'all' : 'none',
@@ -215,8 +215,8 @@ function DropdownMenu({ items, isOpen }: { items: DropdownItem[]; isOpen: boolea
         <div style={{
           width: '10px',
           height: '10px',
-          background: 'rgba(124,58,237,0.3)',
-          border: '1px solid rgba(124,58,237,0.2)',
+          background: '#ffffff',
+          border: '1px solid #e2e8f0',
           transform: 'rotate(45deg)',
           margin: '3px auto 0',
         }} />
@@ -237,28 +237,28 @@ function DropdownMenu({ items, isOpen }: { items: DropdownItem[]; isOpen: boolea
             transition: 'background 0.15s',
             cursor: 'pointer',
           }}
-          onMouseEnter={e => (e.currentTarget.style.background = 'rgba(124,58,237,0.12)')}
+          onMouseEnter={e => (e.currentTarget.style.background = '#f1f5f9')}
           onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
           >
             <div style={{
               width: '36px',
               height: '36px',
               borderRadius: '9px',
-              background: 'rgba(124,58,237,0.15)',
-              border: '1px solid rgba(124,58,237,0.2)',
+              background: '#f1f5f9',
+              border: '1px solid #e2e8f0',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#a78bfa',
+              color: '#7c3aed',
               flexShrink: 0,
             }}>
               {item.icon}
             </div>
             <div>
-              <div style={{ fontSize: '14px', fontWeight: 600, color: '#f1f5f9', marginBottom: '2px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a', marginBottom: '2px' }}>
                 {item.label}
               </div>
-              <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.4 }}>
+              <div style={{ fontSize: '12px', color: '#475569', lineHeight: 1.4 }}>
                 {item.description}
               </div>
             </div>
@@ -314,14 +314,14 @@ export default function Navbar() {
           zIndex: 1000,
           transition: 'background 0.3s, box-shadow 0.3s, border-color 0.3s',
           background: (scrolled || pathname !== '/')
-            ? 'rgba(2, 5, 14, 0.97)'
+            ? 'rgba(255, 255, 255, 0.95)'
             : 'transparent',
           backdropFilter: (scrolled || pathname !== '/') ? 'blur(20px)' : 'none',
           borderBottom: (scrolled || pathname !== '/')
-            ? '1px solid rgba(124,58,237,0.15)'
+            ? '1px solid #e2e8f0'
             : '1px solid transparent',
           boxShadow: (scrolled || pathname !== '/')
-            ? '0 4px 24px rgba(0,0,0,0.4)'
+            ? '0 4px 20px rgba(0,0,0,0.05)'
             : 'none',
         }}
       >
@@ -360,9 +360,9 @@ export default function Navbar() {
                 }} 
               />
             </div>
-            <span style={{ fontWeight: 900, fontSize: '20px', letterSpacing: '-0.5px', color: '#ffffff' }}>
+            <span style={{ fontWeight: 900, fontSize: '20px', letterSpacing: '-0.5px', color: '#0f172a' }}>
               Apply4Jobs
-              <span style={{ color: '#a78bfa', fontSize: '10px', verticalAlign: 'super', marginLeft: '2px', fontWeight: 700 }}>AI</span>
+              <span style={{ color: '#7c3aed', fontSize: '10px', verticalAlign: 'super', marginLeft: '2px', fontWeight: 700 }}>AI</span>
             </span>
           </Link>
 
@@ -379,7 +379,7 @@ export default function Navbar() {
                       gap: '5px',
                       padding: '8px 14px',
                       borderRadius: '8px',
-                      color: '#cbd5e1',
+                      color: '#475569',
                       textDecoration: 'none',
                       fontSize: '14px',
                       fontWeight: 600,
@@ -387,11 +387,11 @@ export default function Navbar() {
                       background: 'transparent',
                     }}
                     onMouseEnter={e => {
-                      e.currentTarget.style.color = '#ffffff';
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+                      e.currentTarget.style.color = '#0f172a';
+                      e.currentTarget.style.background = '#f1f5f9';
                     }}
                     onMouseLeave={e => {
-                      e.currentTarget.style.color = '#cbd5e1';
+                      e.currentTarget.style.color = '#475569';
                       e.currentTarget.style.background = 'transparent';
                     }}
                   >
@@ -407,8 +407,8 @@ export default function Navbar() {
                         gap: '5px',
                         padding: '8px 14px',
                         borderRadius: '8px',
-                        color: openMenu === item.label ? '#ffffff' : '#cbd5e1',
-                        background: openMenu === item.label ? 'rgba(124,58,237,0.12)' : 'transparent',
+                        color: openMenu === item.label ? '#0f172a' : '#475569',
+                        background: openMenu === item.label ? '#f1f5f9' : 'transparent',
                         border: 'none',
                         cursor: 'pointer',
                         fontSize: '14px',
@@ -418,13 +418,13 @@ export default function Navbar() {
                       }}
                       onMouseEnter={e => {
                         if (openMenu !== item.label) {
-                          e.currentTarget.style.color = '#ffffff';
-                          e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+                          e.currentTarget.style.color = '#0f172a';
+                          e.currentTarget.style.background = '#f1f5f9';
                         }
                       }}
                       onMouseLeave={e => {
                         if (openMenu !== item.label) {
-                          e.currentTarget.style.color = '#cbd5e1';
+                          e.currentTarget.style.color = '#475569';
                           e.currentTarget.style.background = 'transparent';
                         }
                       }}
@@ -458,24 +458,24 @@ export default function Navbar() {
               style={{
                 padding: '8px 18px',
                 borderRadius: '8px',
-                color: '#cbd5e1',
+                color: '#475569',
                 textDecoration: 'none',
                 fontSize: '14px',
                 fontWeight: 600,
-                border: '1px solid rgba(255,255,255,0.1)',
-                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid #cbd5e1',
+                background: '#ffffff',
                 transition: 'all 0.2s',
                 display: 'inline-block',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.color = '#ffffff';
-                e.currentTarget.style.borderColor = 'rgba(124,58,237,0.5)';
-                e.currentTarget.style.background = 'rgba(124,58,237,0.1)';
+                e.currentTarget.style.color = '#0f172a';
+                e.currentTarget.style.borderColor = '#7c3aed';
+                e.currentTarget.style.background = '#f8fafc';
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.color = '#cbd5e1';
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
-                e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+                e.currentTarget.style.color = '#475569';
+                e.currentTarget.style.borderColor = '#cbd5e1';
+                e.currentTarget.style.background = '#ffffff';
               }}
             >
               Sign In
@@ -515,9 +515,9 @@ export default function Navbar() {
                 display: 'none',
                 padding: '8px',
                 borderRadius: '8px',
-                border: '1px solid rgba(255,255,255,0.1)',
-                background: 'rgba(255,255,255,0.04)',
-                color: '#ffffff',
+                border: '1px solid #cbd5e1',
+                background: '#ffffff',
+                color: '#0f172a',
                 cursor: 'pointer',
               }}
               className="nav-hamburger"
@@ -540,9 +540,9 @@ export default function Navbar() {
           maxHeight: mobileOpen ? '600px' : '0',
           overflow: 'hidden',
           transition: 'max-height 0.35s cubic-bezier(0.4,0,0.2,1)',
-          background: 'rgba(2,5,14,0.97)',
+          background: '#ffffff',
           backdropFilter: 'blur(20px)',
-          borderTop: mobileOpen ? '1px solid rgba(124,58,237,0.15)' : '1px solid transparent',
+          borderTop: mobileOpen ? '1px solid #e2e8f0' : '1px solid transparent',
         }}
         className="mobile-menu"
         >
@@ -555,11 +555,11 @@ export default function Navbar() {
                     style={{
                       display: 'block',
                       padding: '12px 0',
-                      color: '#cbd5e1',
+                      color: '#475569',
                       textDecoration: 'none',
                       fontSize: '15px',
                       fontWeight: 600,
-                      borderBottom: '1px solid rgba(255,255,255,0.04)',
+                      borderBottom: '1px solid #f1f5f9',
                     }}
                   >
                     {item.label}
@@ -576,8 +576,8 @@ export default function Navbar() {
                         padding: '12px 0',
                         background: 'none',
                         border: 'none',
-                        borderBottom: '1px solid rgba(255,255,255,0.04)',
-                        color: '#cbd5e1',
+                        borderBottom: '1px solid #f1f5f9',
+                        color: '#475569',
                         fontSize: '15px',
                         fontWeight: 600,
                         cursor: 'pointer',
@@ -603,18 +603,18 @@ export default function Navbar() {
                               alignItems: 'center',
                               gap: '10px',
                               padding: '10px 8px',
-                              color: '#94a3b8',
+                              color: '#64748b',
                               textDecoration: 'none',
                               fontSize: '14px',
                               fontWeight: 500,
                               borderRadius: '8px',
                             }}
                             onMouseEnter={e => {
-                              e.currentTarget.style.color = '#ffffff';
-                              e.currentTarget.style.background = 'rgba(124,58,237,0.1)';
+                              e.currentTarget.style.color = '#0f172a';
+                              e.currentTarget.style.background = '#f1f5f9';
                             }}
                             onMouseLeave={e => {
-                              e.currentTarget.style.color = '#94a3b8';
+                              e.currentTarget.style.color = '#64748b';
                               e.currentTarget.style.background = 'transparent';
                             }}
                           >
@@ -633,10 +633,10 @@ export default function Navbar() {
             <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
               <Link href="/login" style={{
                 flex: 1, textAlign: 'center', padding: '12px',
-                borderRadius: '10px', color: '#ffffff', textDecoration: 'none',
+                borderRadius: '10px', color: '#0f172a', textDecoration: 'none',
                 fontSize: '14px', fontWeight: 600,
-                border: '1px solid rgba(255,255,255,0.15)',
-                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid #cbd5e1',
+                background: '#ffffff',
               }}>
                 Sign In
               </Link>

@@ -1,296 +1,466 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 
 export default function LandingPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationQuery, setLocationQuery] = useState('');
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  // Fetch current user and database jobs on mount
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then(res => {
+        if (res.status === 200) return res.json();
+        return null;
+      })
+      .then(data => {
+        if (data && data.status === 'authenticated') {
+          setCurrentUser(data.user);
+        }
+      })
+      .catch(err => console.error('Error fetching auth:', err));
+
+    fetchJobs();
+  }, []);
+
+  const fetchJobs = (search = '', location = '') => {
+    setLoading(true);
+    const query = new URLSearchParams();
+    if (search.trim()) query.set('search', search);
+    if (location.trim()) query.set('location', location);
+
+    fetch(`/api/jobs?${query.toString()}`)
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === 'success') {
+          setJobs(res.data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching jobs:', err);
+        setLoading(false);
+      });
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchJobs(searchQuery, locationQuery);
+    setTimeout(() => {
+      document.getElementById('jobs-section')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
+  const handleApplyJob = (jobId: string) => {
+    if (currentUser && currentUser.role === 'candidate') {
+      window.location.href = `/jobs/${jobId}/apply`;
+    } else {
+      window.location.href = `/login?redirect=${encodeURIComponent(`/jobs/${jobId}/apply`)}`;
+    }
+  };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#02050e', color: '#ffffff', overflowX: 'hidden', fontFamily: "'Nunito', sans-serif" }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#ffffff', color: '#0f172a', overflowX: 'hidden', fontFamily: "'Nunito', sans-serif" }}>
       
-      {/* SECTION 1: HERO (Dark Gradient) */}
+      <Navbar />
+
+      {/* SECTION 1: HERO (Light Mockup Style) */}
       <div style={{
         position: 'relative',
-        background: 'radial-gradient(circle at 80% 30%, rgba(124, 58, 237, 0.2) 0%, rgba(2, 5, 14, 1) 70%)',
+        background: 'radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.06) 0%, rgba(255, 255, 255, 1) 75%)',
         paddingBottom: '80px',
-        paddingTop: '68px',
+        paddingTop: '120px',
         overflow: 'hidden',
       }}>
-        {/* Animated Neural SVG Network Background */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.15, pointerEvents: 'none', zIndex: 1 }}>
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            {/* Pulsing Neural Nodes */}
-            <circle cx="10%" cy="20%" r="4" fill="#8b5cf6" className="bg-neural-node" style={{ animationDelay: '0s' }} />
-            <circle cx="30%" cy="40%" r="5" fill="#3b82f6" className="bg-neural-node" style={{ animationDelay: '1s' }} />
-            <circle cx="50%" cy="15%" r="3.5" fill="#10b981" className="bg-neural-node" style={{ animationDelay: '0.5s' }} />
-            <circle cx="70%" cy="35%" r="4" fill="#8b5cf6" className="bg-neural-node" style={{ animationDelay: '2s' }} />
-            <circle cx="20%" cy="70%" r="4.5" fill="#10b981" className="bg-neural-node" style={{ animationDelay: '1.5s' }} />
-            <circle cx="90%" cy="60%" r="5.5" fill="#3b82f6" className="bg-neural-node" style={{ animationDelay: '2.5s' }} />
-          </svg>
-        </div>
-        <Navbar />
-
-        {/* Hero Body Grid */}
-        <div className="responsive-hero-grid" style={{
-          maxWidth: '1280px',
-          margin: '40px auto 0',
+        {/* Centered Brand & Heading Area */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          gap: '8px',
           padding: '0 20px',
+          position: 'relative',
+          zIndex: 5
         }}>
+          {/* Logo Name in Italic Red */}
+          <h2 style={{
+            fontSize: '48px',
+            fontWeight: 800,
+            fontStyle: 'italic',
+            fontFamily: 'Georgia, serif',
+            color: '#e11d48',
+            margin: 0,
+            letterSpacing: '-1.5px'
+          }}>
+            Apply4Job
+          </h2>
           
-          {/* Hero Left Column */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', position: 'relative', zIndex: 5 }}>
-            <h1 style={{ fontSize: '58px', fontWeight: 800, lineHeight: '1.1', margin: 0, letterSpacing: '-1.5px' }}>
-              Find Jobs.<br />
-              <span className="animate-gradient-text" style={{ background: 'linear-gradient(90deg, #8b5cf6, #3b82f6, #60a5fa, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Build Future.</span><br />
-              <span className="animate-gradient-text" style={{ background: 'linear-gradient(90deg, #60a5fa, #10b981, #38bdf8, #60a5fa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI-Powered.</span>
-            </h1>
-            
-            <p style={{ color: '#94a3b8', fontSize: '16px', lineHeight: '1.6', margin: 0, maxWidth: '520px' }}>
-              Discover opportunities, get AI-driven job recommendations, improve your resume, and accelerate your career growth.
-            </p>
+          {/* Main Heading */}
+          <h1 style={{
+            fontSize: '32px',
+            fontWeight: 800,
+            color: '#0f172a',
+            margin: '8px 0 0',
+            letterSpacing: '-1px'
+          }}>
+            Your next job starts here
+          </h1>
+          
+          {/* Subheading description */}
+          <p style={{
+            color: '#475569',
+            fontSize: '15px',
+            margin: '4px 0 0',
+            maxWidth: '560px',
+            lineHeight: 1.5
+          }}>
+            Create an account or sign in to see your personalised job recommendations.
+          </p>
+        </div>
 
-            {/* GenZ Optimistic Badges Row */}
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', zIndex: 10, position: 'relative' }}>
-              <div className="animate-float" style={{
-                background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)',
-                color: '#10b981', padding: '6px 14px', borderRadius: '100px', fontSize: '12px', fontWeight: 700,
-                display: 'inline-flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.1)'
-              }}>
-                ✨ No Boring CVs
-              </div>
-              <div className="animate-float-reverse" style={{
-                background: 'rgba(124, 58, 237, 0.12)', border: '1px solid rgba(124, 58, 237, 0.3)',
-                color: '#a78bfa', padding: '6px 14px', borderRadius: '100px', fontSize: '12px', fontWeight: 700,
-                display: 'inline-flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 12px rgba(124, 58, 237, 0.1)'
-              }}>
-                ⚡ Matched in 2s
-              </div>
-              <div className="animate-float-fast" style={{
-                background: 'rgba(59, 130, 246, 0.12)', border: '1px solid rgba(59, 130, 246, 0.3)',
-                color: '#60a5fa', padding: '6px 14px', borderRadius: '100px', fontSize: '12px', fontWeight: 700,
-                display: 'inline-flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 12px rgba(59, 130, 246, 0.1)'
-              }}>
-                🎯 ATS Match: 95%+
-              </div>
+        {/* Floating Search Console widget */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          margin: '32px 0 20px',
+          width: '100%',
+          padding: '0 20px',
+          boxSizing: 'border-box'
+        }}>
+          <form onSubmit={handleSearch} className="hero-search-widget" style={{
+            background: '#ffffff',
+            borderRadius: '100px',
+            padding: '6px 6px 6px 18px',
+            display: 'flex',
+            alignItems: 'center',
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.05)',
+            border: '1px solid #cbd5e1',
+            gap: '8px',
+            width: '100%',
+            maxWidth: '780px',
+            boxSizing: 'border-box'
+          }}>
+            {/* Field 1: Search */}
+            <div className="search-field" style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1.2 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input 
+                type="text" 
+                placeholder="Job title, keywords, or company" 
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                style={{ width: '100%', border: 'none', outline: 'none', color: '#1e293b', fontSize: '14px', background: 'transparent' }}
+              />
             </div>
- 
-            {/* Floating Search Console widget */}
-            <div className="hero-search-widget">
 
-              {/* Field 1: Search */}
-              <div className="search-field" style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1.2, paddingLeft: '12px' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5">
-                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                </svg>
-                <input 
-                  type="text" 
-                  placeholder="Job title, skills or company" 
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  style={{ width: '100%', border: 'none', outline: 'none', color: '#1e293b', fontSize: '14px', background: 'transparent' }}
-                />
-              </div>
+            <div className="search-divider" style={{ width: '1px', height: '24px', backgroundColor: '#e2e8f0' }} />
 
-              <div className="search-divider" style={{ width: '1px', height: '28px', backgroundColor: '#e2e8f0' }} />
+            {/* Field 2: Location */}
+            <div className="search-field search-field-last" style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 0.8 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+              <input 
+                type="text" 
+                placeholder="Guwahati, Assam" 
+                value={locationQuery}
+                onChange={e => setLocationQuery(e.target.value)}
+                style={{ width: '100%', border: 'none', outline: 'none', color: '#1e293b', fontSize: '14px', background: 'transparent' }}
+              />
+            </div>
 
-              {/* Field 2: Location */}
-              <div className="search-field search-field-last" style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 0.8 }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-                </svg>
-                <input 
-                  type="text" 
-                  placeholder="Location" 
-                  value={locationQuery}
-                  onChange={e => setLocationQuery(e.target.value)}
-                  style={{ width: '100%', border: 'none', outline: 'none', color: '#1e293b', fontSize: '14px', background: 'transparent' }}
-                />
-              </div>
+            {/* Find Jobs Button */}
+            <button type="submit" className="glow-btn" style={{
+              background: '#0252cc',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '100px',
+              padding: '10px 28px',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              textDecoration: 'none',
+              whiteSpace: 'nowrap',
+              boxShadow: 'none',
+              fontFamily: 'inherit'
+            }}>
+              Find jobs
+            </button>
+          </form>
+        </div>
 
-              {/* Filter toggle button */}
-              <button className="filter-toggle-btn" style={{
-                background: 'transparent', border: 'none', outline: 'none', color: '#64748b',
-                display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: 600,
-                cursor: 'pointer', padding: '0 8px'
-              }}>
-                All Filters
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2.5">
-                  <polyline points="6 9 12 15 18 9"/>
-                </svg>
+        {/* Center Get Started Button */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
+          <Link href="/register" className="glow-btn" style={{
+            background: '#0252cc',
+            color: '#ffffff',
+            borderRadius: '8px',
+            padding: '12px 32px',
+            fontSize: '15px',
+            fontWeight: 700,
+            textDecoration: 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            boxShadow: '0 4px 12px rgba(2, 82, 204, 0.25)'
+          }}>
+            Get Started &rarr;
+          </Link>
+        </div>
+
+        {/* Centered Popular Searches Strip */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '40px', width: '100%', padding: '0 20px', boxSizing: 'border-box' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            background: '#0a0f1d',
+            borderRadius: '8px',
+            padding: '10px 20px',
+            flexWrap: 'wrap',
+            maxWidth: '780px',
+            justifyContent: 'center',
+            boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+          }}>
+            <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 600 }}>Popular Searches:</span>
+            {['UI/UX Designer', 'Data Analyst', 'Full Stack Developer', 'Marketing', 'Product Manager'].map((tag, idx) => (
+              <button 
+                type="button"
+                onClick={() => {
+                  setSearchQuery(tag);
+                  fetchJobs(tag, locationQuery);
+                  setTimeout(() => {
+                    document.getElementById('jobs-section')?.scrollIntoView({ behavior: 'smooth' });
+                  }, 100);
+                }}
+                key={idx} 
+                style={{
+                  fontSize: '11px',
+                  color: '#cbd5e1',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  padding: '4px 12px',
+                  borderRadius: '100px',
+                  border: '1px solid rgba(255, 255, 255, 0.12)',
+                  cursor: 'pointer',
+                  outline: 'none',
+                  transition: 'all 0.2s',
+                  fontWeight: 500
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+                }}
+              >
+                {tag}
               </button>
+            ))}
+          </div>
+        </div>
 
-              {/* Search button with interactive shimmer effect */}
-              <Link href="/candidate/dashboard" className="glow-btn animate-shimmer" style={{
-                background: '#6d28d9', color: '#ffffff', border: 'none', borderRadius: '12px',
-                padding: '12px 24px', fontSize: '14px', fontWeight: 600, cursor: 'pointer', textDecoration: 'none'
-              }}>
-                Search Jobs
-              </Link>
+        {/* 6 Job Cards Grid */}
+        <div id="jobs-section" style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          width: '100%',
+          padding: '0 20px',
+          boxSizing: 'border-box'
+        }}>
+          {loading ? (
+            <div style={{ padding: '60px', textAlign: 'center', color: '#0252cc', fontSize: '16px', fontWeight: 700 }}>
+              Searching database matching engine...
             </div>
+          ) : jobs.length === 0 ? (
+            <div style={{ padding: '60px', textAlign: 'center', color: '#64748b', fontSize: '15px' }}>
+              No active jobs found matching your criteria.{' '}
+              <button 
+                onClick={() => {
+                  setSearchQuery('');
+                  setLocationQuery('');
+                  fetchJobs('', '');
+                }}
+                style={{ background: 'transparent', border: 'none', color: '#0252cc', textDecoration: 'underline', fontWeight: 600, cursor: 'pointer', fontSize: '15px' }}
+              >
+                Show all jobs
+              </button>
+            </div>
+          ) : (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+              gap: '24px',
+              width: '100%'
+            }}>
+              {jobs.map((job) => (
+                <div
+                  key={job.id}
+                  style={{
+                    background: '#ffffff',
+                    borderRadius: '16px',
+                    border: '1.5px solid #e2e8f0',
+                    padding: '24px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '12px',
+                    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.01)',
+                    position: 'relative',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                    boxSizing: 'border-box'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.04)';
+                    e.currentTarget.style.borderColor = '#0252cc';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.01)';
+                    e.currentTarget.style.borderColor = '#e2e8f0';
+                  }}
+                >
+                  {/* Bookmark Button */}
+                  <button 
+                    aria-label="Bookmark job"
+                    style={{
+                      position: 'absolute',
+                      top: '24px',
+                      right: '24px',
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                      color: '#64748b',
+                      padding: 0
+                    }}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                    </svg>
+                  </button>
 
-            {/* Popular Searches */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', marginTop: '4px' }}>
-              <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>Popular Searches:</span>
-              {['UI/UX Designer', 'Data Analyst', 'Full Stack Developer', 'Marketing', 'Product Manager'].map((tag, idx) => (
-                <span key={idx} style={{
-                  fontSize: '11px', color: '#94a3b8', background: 'rgba(255,255,255,0.03)',
-                  padding: '4px 10px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)'
-                }}>{tag}</span>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    {/* Easily Apply Badge */}
+                    <div style={{
+                      alignSelf: 'flex-start',
+                      background: '#eff6ff',
+                      border: '1px solid #bfdbfe',
+                      borderRadius: '4px',
+                      padding: '2px 8px',
+                      fontSize: '11px',
+                      color: '#0252cc',
+                      fontWeight: 700
+                    }}>
+                      Easily apply
+                    </div>
+                    {/* Match Rating */}
+                    <div style={{
+                      alignSelf: 'flex-start',
+                      background: job.match >= 85 ? 'rgba(16, 185, 129, 0.08)' : 'rgba(245, 158, 11, 0.08)',
+                      border: job.match >= 85 ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(245, 158, 11, 0.2)',
+                      borderRadius: '4px',
+                      padding: '2px 8px',
+                      fontSize: '11px',
+                      color: job.match >= 85 ? '#10b981' : '#f59e0b',
+                      fontWeight: 700
+                    }}>
+                      {job.match || 80}% Match
+                    </div>
+                  </div>
+
+                  {/* Job Title */}
+                  <h3
+                    onClick={() => handleApplyJob(job.id)}
+                    style={{
+                      fontSize: '16px',
+                      fontWeight: 700,
+                      color: '#0f172a',
+                      textDecoration: 'none',
+                      margin: '4px 0 0',
+                      lineHeight: '1.4',
+                      cursor: 'pointer',
+                      transition: 'color 0.2s'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.color = '#0252cc'}
+                    onMouseLeave={e => e.currentTarget.style.color = '#0f172a'}
+                  >
+                    {job.title}
+                  </h3>
+
+                  {/* Company & Location Info */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <div style={{ fontSize: '13px', color: '#475569', fontWeight: 600 }}>
+                      {job.company}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#64748b' }}>
+                      {job.location}
+                    </div>
+                  </div>
+
+                  {/* Tags */}
+                  {job.tags && job.tags.length > 0 && (
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
+                      {job.tags.slice(0, 3).map((tag: string, tIdx: number) => (
+                        <span key={tIdx} style={{
+                          padding: '3px 8px',
+                          background: '#f1f5f9',
+                          border: '1px solid #e2e8f0',
+                          borderRadius: '20px',
+                          fontSize: '11px',
+                          color: '#475569'
+                        }}>{tag}</span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Salary Pill */}
+                  <div style={{
+                    alignSelf: 'flex-start',
+                    background: '#f1f5f9',
+                    borderRadius: '4px',
+                    padding: '4px 8px',
+                    fontSize: '11px',
+                    color: '#475569',
+                    fontWeight: 700,
+                    marginTop: 'auto'
+                  }}>
+                    {job.salary}
+                  </div>
+
+                  {/* Easy Apply Button */}
+                  <button
+                    onClick={() => handleApplyJob(job.id)}
+                    className="glow-btn"
+                    style={{
+                      background: '#0252cc',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '10px 16px',
+                      fontSize: '13.5px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      textAlign: 'center',
+                      width: '100%',
+                      boxSizing: 'border-box',
+                      fontFamily: 'inherit',
+                      marginTop: '6px'
+                    }}
+                  >
+                    Easy Apply
+                  </button>
+                </div>
               ))}
             </div>
-
-            {/* Active users stats */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '16px' }}>
-              <div style={{ display: 'flex' }}>
-                {[
-                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80',
-                  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80',
-                  'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=100&q=80'
-                ].map((src, idx) => (
-                  <img key={idx} src={src} alt="" style={{
-                    width: '32px', height: '32px', borderRadius: '50%',
-                    border: '2px solid #02050e', marginLeft: idx > 0 ? '-10px' : '0',
-                    objectFit: 'cover'
-                  }} />
-                ))}
-              </div>
-              <div>
-                <span style={{ display: 'block', fontSize: '14px', fontWeight: 700 }}>2M+</span>
-                <span style={{ display: 'block', fontSize: '11px', color: '#64748b' }}>Active Job Seekers</span>
-              </div>
-            </div>
-
-            {/* Trusted By Companies logos */}
-            <div style={{ marginTop: '24px' }}>
-              <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '16px' }}>
-                Trusted by 10,000+ innovative companies
-              </div>
-              <div style={{ display: 'flex', gap: '30px', alignItems: 'center', opacity: 0.6, flexWrap: 'wrap' }}>
-                {/* Google */}
-                <span style={{ fontSize: '16px', fontWeight: 'bold', fontFamily: 'sans-serif' }}>
-                  <span style={{ color: '#4285F4' }}>G</span>
-                  <span style={{ color: '#EA4335' }}>o</span>
-                  <span style={{ color: '#FBBC05' }}>o</span>
-                  <span style={{ color: '#4285F4' }}>g</span>
-                  <span style={{ color: '#34A853' }}>l</span>
-                  <span style={{ color: '#EA4335' }}>e</span>
-                </span>
-                {/* Microsoft */}
-                <span style={{ fontSize: '16px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px', color: '#ffffff' }}>
-                  <svg width="16" height="16" viewBox="0 0 23 23">
-                    <rect width="10" height="10" fill="#f25022"/>
-                    <rect x="11" width="10" height="10" fill="#7fba00"/>
-                    <rect y="11" width="10" height="10" fill="#00a4ef"/>
-                    <rect x="11" y="11" width="10" height="10" fill="#ffb900"/>
-                  </svg>
-                  Microsoft
-                </span>
-                {/* Amazon */}
-                <span style={{ fontSize: '16px', fontWeight: 800, color: '#ffffff' }}>amazon</span>
-                {/* Spotify */}
-                <span style={{ fontSize: '16px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', color: '#1DB954' }}>
-                  🟢 Spotify
-                </span>
-                {/* Airbnb */}
-                <span style={{ fontSize: '16px', fontWeight: 800, color: '#FF5A5F' }}>airbnb</span>
-              </div>
-            </div>
-
-          </div>
-
-          {/* Hero Right Column (Image + floating widgets) */}
-          <div className="hero-graphic-col" style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            {/* Main Portrait Card */}
-            <div className="hero-portrait-card-glow" style={{
-              position: 'relative',
-              width: '420px',
-              height: '460px',
-              borderRadius: '24px',
-              overflow: 'hidden',
-              boxShadow: '0 25px 50px rgba(0, 0, 0, 0.5)',
-              border: '1px solid rgba(255,255,255,0.06)'
-            }}>
-              <img 
-                src="/candidate_hero_portrait.png" 
-                alt="Smiling Candidate" 
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-              />
-              {/* Bottom purple shade overlay */}
-              <div style={{
-                position: 'absolute', bottom: 0, left: 0, right: 0, height: '120px',
-                background: 'linear-gradient(to top, rgba(2, 5, 14, 0.9), transparent)'
-              }} />
-            </div>
-
-            {/* Floating Widget 1: AI Resume Review (Top Right) */}
-            <div className="glass-panel" style={{
-              position: 'absolute', top: '20px', right: '-10px', width: '220px', padding: '16px',
-              display: 'flex', flexDirection: 'column', gap: '8px', zIndex: 10, background: 'rgba(9, 14, 32, 0.8)'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 600 }}>AI Resume Review</span>
-              </div>
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                {/* Green Progress circle */}
-                <div style={{
-                  position: 'relative', width: '48px', height: '48px', borderRadius: '50%',
-                  border: '3px solid #10b981', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontWeight: 'bold', fontSize: '15px', color: '#10b981', boxShadow: '0 0 10px rgba(16, 185, 129, 0.2)'
-                }}>
-                  85
-                </div>
-                <div>
-                  <div style={{ fontSize: '12px', fontWeight: 700 }}>Great Score!</div>
-                  <div style={{ fontSize: '9px', color: '#94a3b8', lineHeight: '1.2' }}>Your resume matches top market trends.</div>
-                </div>
-              </div>
-              <Link href="/candidate/dashboard" style={{
-                background: '#6d28d9', color: '#ffffff', border: 'none', borderRadius: '6px',
-                padding: '6px', fontSize: '10px', fontWeight: 700, textDecoration: 'none', textAlign: 'center',
-                boxShadow: '0 4px 10px rgba(109, 40, 217, 0.3)'
-              }}>
-                Improve Now →
-              </Link>
-            </div>
-
-            {/* Floating Widget 2: Recommended Jobs (Bottom Right) */}
-            <div className="glass-panel" style={{
-              position: 'absolute', bottom: '30px', right: '-15px', width: '250px', padding: '16px',
-              display: 'flex', flexDirection: 'column', gap: '12px', zIndex: 10, background: 'rgba(9, 14, 32, 0.8)'
-            }}>
-              <div style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 600 }}>Recommended Jobs</div>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {/* Item 1 */}
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'rgba(255,255,255,0.02)', padding: '6px', borderRadius: '8px' }}>
-                  <div style={{ width: '24px', height: '24px', borderRadius: '4px', background: '#4285F4', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>G</div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '11px', fontWeight: 700 }}>Product Designer</div>
-                    <div style={{ fontSize: '8px', color: '#64748b' }}>Google &bull; Bangalore</div>
-                  </div>
-                  <span style={{ fontSize: '9px', fontWeight: 700, color: '#10b981' }}>$18k - $24k</span>
-                </div>
-                {/* Item 2 */}
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'rgba(255,255,255,0.02)', padding: '6px', borderRadius: '8px' }}>
-                  <div style={{ width: '24px', height: '24px', borderRadius: '4px', background: '#7fba00', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>M</div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '11px', fontWeight: 700 }}>Frontend Developer</div>
-                    <div style={{ fontSize: '8px', color: '#64748b' }}>Microsoft &bull; Remote</div>
-                  </div>
-                  <span style={{ fontSize: '9px', fontWeight: 700, color: '#10b981' }}>$16k - $22k</span>
-                </div>
-              </div>
-
-              <Link href="/candidate/dashboard" style={{ fontSize: '10px', color: '#10b981', textDecoration: 'none', fontWeight: 600, textAlign: 'center' }}>
-                See all recommendations →
-              </Link>
-            </div>
-
-          </div>
-
+          )}
         </div>
 
       </div>

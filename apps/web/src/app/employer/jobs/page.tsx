@@ -1,20 +1,20 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import DashboardLayout from '@/components/DashboardLayout';
 import DOMPurify from 'dompurify';
 import { Info } from 'lucide-react';
 
-export default function EmployerJobs() {
+function EmployerJobsContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [activeJobs, setActiveJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [companyName, setCompanyName] = useState('Employer');
-  const [showAddJobModal, setShowAddJobModal] = useState<boolean>(false);
   const [previewJobId, setPreviewJobId] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string>('');
   const msgRef = useRef<HTMLDivElement>(null);
-  const [newTitle, setNewTitle] = useState<string>('');
-  const [newLocation, setNewLocation] = useState<string>('');
 
   const loadData = () => {
     fetch('/api/employer/dashboard')
@@ -34,43 +34,18 @@ export default function EmployerJobs() {
 
   useEffect(() => {
     loadData();
-  }, []);
+    if (searchParams.get('posted') === 'success') {
+      setSuccessMsg('Job posting has been done successfully');
+      setTimeout(() => setSuccessMsg(''), 5000);
+      router.replace('/employer/jobs');
+    }
+  }, [searchParams, router]);
 
   useEffect(() => {
     if (successMsg && msgRef.current) {
       msgRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [successMsg]);
-
-  const handleCreateJob = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTitle.trim()) return;
-
-    try {
-      const res = await fetch('/api/jobs', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: newTitle,
-          location: newLocation || 'Remote',
-          companyName: companyName,
-          skillsRequired: ['TypeScript', 'React', 'Node.js']
-        })
-      });
-      const data = await res.json();
-      if (data.status === 'success') {
-        loadData();
-        setSuccessMsg('Job posting has been done successfully');
-        setTimeout(() => setSuccessMsg(''), 5000);
-      }
-    } catch (err) {
-      console.error('Error posting new job:', err);
-    }
-
-    setNewTitle('');
-    setNewLocation('');
-    setShowAddJobModal(false);
-  };
 
   const handleDeleteJob = async (id: string) => {
     if (!confirm('Are you sure you want to remove this job listing?')) return;
@@ -105,7 +80,7 @@ export default function EmployerJobs() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <h3 className="brand-title" style={{ margin: 0, fontSize: '18px', textTransform: 'none' }}>Active Openings</h3>
           <button 
-            onClick={() => setShowAddJobModal(true)}
+            onClick={() => router.push('/employer/post-job')}
             className="glow-btn" 
             style={{ padding: '8px 16px', fontSize: '13px' }}
           >
@@ -151,6 +126,11 @@ export default function EmployerJobs() {
                     color: '#1f2328',
                     fontSize: '14px' 
                   }}>
+                    {job.bannerUrl && (
+                      <div style={{ width: '100%', maxHeight: '200px', borderRadius: '8px', overflow: 'hidden', marginBottom: '15px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                        <img src={job.bannerUrl} alt="Job Banner" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', display: 'block' }} />
+                      </div>
+                    )}
                     <div 
                       className="prose prose-sm max-w-none"
                       dangerouslySetInnerHTML={{ 
@@ -168,50 +148,14 @@ export default function EmployerJobs() {
         )}
       </div>
 
-      {showAddJobModal && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)',
-          display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100
-        }}>
-          <div className="glass-panel" style={{ padding: '30px', width: '400px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            <h3 className="brand-title" style={{ margin: '0 0 10px', textTransform: 'none' }}>Post New Opening</h3>
-            <form onSubmit={handleCreateJob} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '12px', color: '#57606a', marginBottom: '5px' }}>Job Title</label>
-                <input 
-                  type="text" 
-                  value={newTitle}
-                  onChange={e => setNewTitle(e.target.value)}
-                  placeholder="e.g. Senior Node Developer"
-                  style={{ width: '100%', padding: '10px' }}
-                  required
-                />
-              </div>
-              <div>
-                <label style={{ display: 'block', fontSize: '12px', color: '#57606a', marginBottom: '5px' }}>Location/Remote Option</label>
-                <input 
-                  type="text" 
-                  value={newLocation}
-                  onChange={e => setNewLocation(e.target.value)}
-                  placeholder="e.g. Remote, San Francisco"
-                  style={{ width: '100%', padding: '10px' }}
-                />
-              </div>
-              <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                <button type="submit" className="glow-btn" style={{ flex: 1, padding: '10px', fontSize: '13px' }}>Publish Job</button>
-                <button 
-                  type="button" 
-                  onClick={() => setShowAddJobModal(false)}
-                  style={{ flex: 1, padding: '10px', borderRadius: '12px', border: '1px solid #d0d7de', background: 'transparent', color: '#1f2328', cursor: 'pointer', fontSize: '13px' }}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </DashboardLayout>
+  );
+}
+
+export default function EmployerJobs() {
+  return (
+    <Suspense fallback={<div style={{ padding: '20px', color: 'white' }}>Loading Workspace...</div>}>
+      <EmployerJobsContent />
+    </Suspense>
   );
 }

@@ -61,6 +61,7 @@ export async function GET() {
         title: job.title,
         location: job.location || 'Remote',
         description: job.description,
+        bannerUrl: job.bannerUrl || null,
         applicants: job.applications.length,
         matchRate: avgMatch
       };
